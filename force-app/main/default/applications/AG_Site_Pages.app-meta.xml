@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomApplication xmlns="http://soap.sforce.com/2006/04/metadata">
+    <brand>
+        <headerColor>#0070D2</headerColor>
+        <logo>ASPHALTGREEN_2014_LOGO_sm5</logo>
+        <logoVersion>1</logoVersion>
+        <shouldOverrideOrgTheme>true</shouldOverrideOrgTheme>
+    </brand>
+    <description>Manage content from site pages in the online community</description>
+    <formFactors>Small</formFactors>
+    <formFactors>Large</formFactors>
+    <isNavAutoTempTabsDisabled>false</isNavAutoTempTabsDisabled>
+    <isNavPersonalizationDisabled>false</isNavPersonalizationDisabled>
+    <isNavTabPersistenceDisabled>false</isNavTabPersistenceDisabled>
+    <label>AG Site Pages</label>
+    <navType>Standard</navType>
+    <tabs>Account_Site_Page__c</tabs>
+    <tabs>standard-Account</tabs>
+    <tabs>Guest_Pass__c</tabs>
+    <uiType>Lightning</uiType>
+    <utilityBar>AG_Site_Pages_UtilityBar</utilityBar>
+</CustomApplication>
