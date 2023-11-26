@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CompactLayout xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Account_Site_Page_Compact_Layout</fullName>
+    <fields>Name</fields>
+    <fields>Page_URL__c</fields>
+    <label>Account Site Page Compact Layout</label>
+</CompactLayout>

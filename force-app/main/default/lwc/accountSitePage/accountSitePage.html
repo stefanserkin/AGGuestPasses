@@ -1,0 +1,109 @@
+<template>
+    <div class="c-container">
+        <!-- LIGHTNING SPINNER ON LOAD -->
+        <template if:true={isLoading}>
+            <lightning-spinner alternative-text="Loading" size="large"></lightning-spinner>
+        </template>
+
+        <lightning-layout multiple-rows="true">
+            <!-- BANNER IMAGE WITH TITLE AND BLUR -->
+            <lightning-layout-item if:true={showPageTitle} padding="around-small" size="12">
+                <div class="header-container">
+                    <img src={headerImageUrl} class="header-image" />
+                    <div class="header-title slds-text-heading_large">{pageName}</div>
+                </div>
+            </lightning-layout-item>
+
+            <!-- BANNER IMAGE WITHOUT TITLE -->
+            <lightning-layout-item if:false={showPageTitle} padding="around-small" size="12">
+                <div class="header-container">
+                    <img src={headerImageUrl} style="width:100%" />
+                </div>
+            </lightning-layout-item>
+
+            <!-- GALLERY -->
+            <lightning-layout-item if:true={showImageGallery} padding="around-small" size="12">
+                <c-account-site-page-image-gallery></c-account-site-page-image-gallery>
+            </lightning-layout-item>
+
+            <lightning-layout-item padding="around-small" size="12">
+                <lightning-layout>
+                    <!-- LEFT COLUMN -->
+                    <lightning-layout-item padding="around-small" size="3">
+                        <div class="page-section page-right">
+                            <h2>Sidebar Content</h2>
+                            <p>
+                                <lightning-formatted-rich-text 
+                                    value={sidebarContent}
+                                ></lightning-formatted-rich-text>
+                            </p>
+                        </div>
+                    </lightning-layout-item>
+
+                    <!-- MAIN COLUMN -->
+                    <lightning-layout-item padding="around-small" size="6">
+                        <div class="page-section page-main">
+                            <h2>Body Content</h2>
+                            <lightning-formatted-rich-text 
+                                value={bodyContent}
+                            ></lightning-formatted-rich-text>
+                        </div>
+                    </lightning-layout-item>
+
+                    <!-- RIGHT COLUMN -->
+                    <lightning-layout-item padding="around-small" size="3">
+                        <!-- GUEST PASS FORM -->
+                        <div class="page-section page-right slds-var-m-bottom_large" if:true={showGuestPassForm}>
+                            <template if:false={guestPassFormIsSubmitted}>
+                                <h2 class="slds-text-heading_small">We'd love to see you!</h2>
+                                <div class="slds-var-m-around_medium">
+                                    <lightning-input type="text" label="First Name" onchange={handleFirstNameChange} required></lightning-input>
+                                    <lightning-input type="text" label="Last Name" onchange={handleLastNameChange} required></lightning-input>
+                                    <lightning-input type="email" label="Email Address" placeholder="email@domain.com" onchange={handleEmailChange} required></lightning-input>
+                                    <lightning-input type="tel" label="Phone" name="phone" placeholder="212-123-1234" onchange={handlePhoneChange} pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"></lightning-input>
+                                    <div class="slds-var-m-top_small">
+                                        <lightning-button variant="brand" label="Claim Guest Pass" onclick={handleFormSubmission}></lightning-button>
+                                    </div>
+                                </div>
+                            </template>
+                            <!-- THANK YOU PAGE -->
+                            <template if:true={guestPassFormIsSubmitted}>
+                                <div class="slds-var-m-around_medium">
+                                    <h2 class="slds-text-heading_small">You're all set!</h2>
+                                    <p>{thankYouMessage}</p>
+                                </div>
+                            </template>
+                        </div>
+
+                        <!-- RESOURCES -->
+                        <div class="page-section page-right" if:true={showResources}>
+                            <h2 class="slds-text-heading_small slds-var-p-bottom_small">Resources</h2>
+                            <ul>
+                                <template for:each={resources} for:item="res">
+                                    <li key={res.Id}>
+                                        <lightning-button 
+                                            variant="base" 
+                                            label={res.Name} 
+                                            title={res.Name} 
+                                            data-target-behavior={res.targetBehavior} 
+                                            data-url={res.Resource_URL__c}
+                                            onclick={handleGoToResource} 
+                                            class="slds-m-left_x-small"
+                                        ></lightning-button>
+                                    </li>
+                                </template>
+                            </ul>
+                        </div>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </lightning-layout-item>
+
+            <!-- FOOTER -->
+            <lightning-layout-item flexibility="auto" padding="around-small" size="12">
+                <div class="page-footer page-section">
+                    <h2>Footer</h2>
+                </div>
+            </lightning-layout-item>
+        </lightning-layout>
+    </div>
+</template>

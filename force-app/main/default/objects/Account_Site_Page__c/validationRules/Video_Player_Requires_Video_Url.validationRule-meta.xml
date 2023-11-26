@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Video_Player_Requires_Video_Url</fullName>
+    <active>true</active>
+    <description>If Show Video Player is checked, a Video URL must be provided</description>
+    <errorConditionFormula>AND(
+  Show_Video_Player__c ,
+  ISBLANK( Video_URL__c )
+)</errorConditionFormula>
+    <errorDisplayField>Video_URL__c</errorDisplayField>
+    <errorMessage>If Show Video Player is checked, a Video URL must be provided</errorMessage>
+</ValidationRule>

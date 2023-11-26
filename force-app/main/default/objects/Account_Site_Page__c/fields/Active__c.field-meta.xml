@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Active__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>If active, content is displayed on the page. When inactive, the public page provides a Page Not Found to the user.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>If active, content is displayed on the page. When inactive, the public page provides a Page Not Found to the user.</inlineHelpText>
+    <label>Active</label>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>
