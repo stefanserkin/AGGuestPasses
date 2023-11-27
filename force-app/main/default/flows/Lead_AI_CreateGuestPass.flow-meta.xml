@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>59.0</apiVersion>
+    <assignments>
+        <name>Set_Guest_Pass</name>
+        <label>Set Guest Pass</label>
+        <locationX>336</locationX>
+        <locationY>323</locationY>
+        <assignmentItems>
+            <assignToReference>guestPass.Lead__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>guestPass.Status__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Valid</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>guestPass.Source__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Promotion</stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>guestPass.Expiration_Date__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>dateFmlExpiration</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>guestPass.Waiver_Signed__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>$Record.Waiver_Signed__c</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Check_for_Lead_Location</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Set_Guest_Pass_Location</name>
+        <label>Set Guest Pass Location</label>
+        <locationX>50</locationX>
+        <locationY>755</locationY>
+        <assignmentItems>
+            <assignToReference>guestPass.Location__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Get_Location.Id</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Insert_Guest_Pass</targetReference>
+        </connector>
+    </assignments>
+    <decisions>
+        <name>Check_for_Lead_Location</name>
+        <label>Check for Lead Location</label>
+        <locationX>336</locationX>
+        <locationY>431</locationY>
+        <defaultConnector>
+            <targetReference>Insert_Guest_Pass</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Lead_has_Location</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Location__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Get_Location</targetReference>
+            </connector>
+            <label>Lead has Location</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Check_Get_Location</name>
+        <label>Check Get Location</label>
+        <locationX>182</locationX>
+        <locationY>647</locationY>
+        <defaultConnector>
+            <targetReference>Insert_Guest_Pass</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Location Not Found</defaultConnectorLabel>
+        <rules>
+            <name>Got_Location</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Location</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Set_Guest_Pass_Location</targetReference>
+            </connector>
+            <label>Got Location</label>
+        </rules>
+    </decisions>
+    <description>Record-triggered, after insert. Create Guest Pass records for leads where Free Guest Pass equals true.</description>
+    <environments>Default</environments>
+    <formulas>
+        <description>If an expiration is not defined, guest pass expires at the end of the current month</description>
+        <name>dateFmlExpiration</name>
+        <dataType>Date</dataType>
+        <expression>IF( !ISBLANK( {!$Record.Free_Guest_Pass_Expiration__c} ),
+  {!$Record.Free_Guest_Pass_Expiration__c},
+  DATE( YEAR( {!$Flow.CurrentDate} ), MONTH( {!$Flow.CurrentDate} ) + 1, 1 ) - 1
+)</expression>
+    </formulas>
+    <interviewLabel>Lead AI CreateGuestPass {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Lead AI CreateGuestPass</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordCreates>
+        <name>Insert_Guest_Pass</name>
+        <label>Insert Guest Pass</label>
+        <locationX>336</locationX>
+        <locationY>1031</locationY>
+        <inputReference>guestPass</inputReference>
+    </recordCreates>
+    <recordLookups>
+        <name>Get_Location</name>
+        <label>Get Location</label>
+        <locationX>182</locationX>
+        <locationY>539</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Check_Get_Location</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Name</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Location__c</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>TREX1__Location__c</object>
+        <sortField>CreatedDate</sortField>
+        <sortOrder>Asc</sortOrder>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <start>
+        <locationX>210</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Set_Guest_Pass</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Free_Guest_Pass__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </filters>
+        <object>Lead</object>
+        <recordTriggerType>Create</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Active</status>
+    <variables>
+        <name>guestPass</name>
+        <dataType>SObject</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>Guest_Pass__c</objectType>
+    </variables>
+</Flow>
