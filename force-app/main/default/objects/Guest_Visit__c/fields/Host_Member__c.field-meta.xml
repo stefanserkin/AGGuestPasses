@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Host_Member__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>The member that shared the guest pass with the guest</description>
+    <externalId>false</externalId>
+    <inlineHelpText>The member that shared the guest pass with the guest</inlineHelpText>
+    <label>Host Member</label>
+    <referenceTo>Contact</referenceTo>
+    <relationshipName>Guest_Passes_Shared</relationshipName>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

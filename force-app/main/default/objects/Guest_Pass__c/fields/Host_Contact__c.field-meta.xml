@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Host_Account__c</fullName>
+    <fullName>Host_Contact__c</fullName>
     <deleteConstraint>SetNull</deleteConstraint>
-    <description>The organization or household responsible for the guest pass relationship, if applicable</description>
+    <description>The contact that invited the guest to Asphalt Green</description>
     <externalId>false</externalId>
-    <inlineHelpText>The organization or household responsible for the guest pass relationship, if applicable</inlineHelpText>
-    <label>Host Account</label>
-    <referenceTo>Account</referenceTo>
+    <inlineHelpText>The contact that invited the guest to Asphalt Green</inlineHelpText>
+    <label>Host Contact</label>
+    <referenceTo>Contact</referenceTo>
     <relationshipLabel>Hosted Guest Passes</relationshipLabel>
     <relationshipName>Hosted_Guest_Passes</relationshipName>
     <required>false</required>

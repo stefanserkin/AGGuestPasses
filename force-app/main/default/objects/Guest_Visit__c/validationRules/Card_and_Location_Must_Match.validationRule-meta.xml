@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Card_and_Location_Must_Match</fullName>
+    <active>true</active>
+    <description>The card number should include the location of the guest visit</description>
+    <errorConditionFormula>AND(
+  !ISBLANK( Temporary_Card__c ) , 
+  Temporary_Card__r.Location__c &lt;&gt; Location__c 
+)</errorConditionFormula>
+    <errorDisplayField>Temporary_Card_Number__c</errorDisplayField>
+    <errorMessage>That card is not valid for this guest visit&apos;s location. Please select a different card.</errorMessage>
+</ValidationRule>

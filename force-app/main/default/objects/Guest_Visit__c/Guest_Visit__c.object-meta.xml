@@ -129,16 +129,16 @@
     <actionOverrides>
         <actionName>View</actionName>
         <comment>Action override created by Lightning App Builder during activation.</comment>
-        <content>Guest_Pass_Record_Page</content>
-        <formFactor>Large</formFactor>
+        <content>Guest_Visit_Record_Page</content>
+        <formFactor>Small</formFactor>
         <skipRecordTypeSelect>false</skipRecordTypeSelect>
         <type>Flexipage</type>
     </actionOverrides>
     <actionOverrides>
         <actionName>View</actionName>
         <comment>Action override created by Lightning App Builder during activation.</comment>
-        <content>Guest_Pass_Record_Page</content>
-        <formFactor>Small</formFactor>
+        <content>Guest_Visit_Record_Page</content>
+        <formFactor>Large</formFactor>
         <skipRecordTypeSelect>false</skipRecordTypeSelect>
         <type>Flexipage</type>
     </actionOverrides>
@@ -147,12 +147,11 @@
         <type>Default</type>
     </actionOverrides>
     <allowInChatterGroups>true</allowInChatterGroups>
-    <compactLayoutAssignment>Guest_Pass_Compact_Layout</compactLayoutAssignment>
+    <compactLayoutAssignment>Guest_Visit_Compact_Layout</compactLayoutAssignment>
     <deploymentStatus>Deployed</deploymentStatus>
-    <description>A pass for a single guest to visit Asphalt Green</description>
     <enableActivities>true</enableActivities>
     <enableBulkApi>true</enableBulkApi>
-    <enableFeeds>false</enableFeeds>
+    <enableFeeds>true</enableFeeds>
     <enableHistory>true</enableHistory>
     <enableLicensing>false</enableLicensing>
     <enableReports>true</enableReports>
@@ -160,15 +159,33 @@
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
     <externalSharingModel>Private</externalSharingModel>
-    <label>Guest Pass</label>
+    <label>Guest Visit</label>
     <nameField>
-        <displayFormat>Pass-{0000000}</displayFormat>
-        <label>Guest Pass Name</label>
+        <displayFormat>GV-{0000000}</displayFormat>
+        <label>Guest Visit Number</label>
+        <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>AutoNumber</type>
     </nameField>
-    <pluralLabel>Guest Passes</pluralLabel>
-    <searchLayouts></searchLayouts>
+    <pluralLabel>Guest Visits</pluralLabel>
+    <searchLayouts>
+        <excludedStandardButtons>New</excludedStandardButtons>
+        <excludedStandardButtons>OpenListInQuip</excludedStandardButtons>
+        <excludedStandardButtons>NewFromDocument</excludedStandardButtons>
+        <excludedStandardButtons>Accept</excludedStandardButtons>
+        <excludedStandardButtons>ChangeOwner</excludedStandardButtons>
+        <excludedStandardButtons>Import</excludedStandardButtons>
+        <excludedStandardButtons>MassChangeOwner</excludedStandardButtons>
+        <excludedStandardButtons>PrintableListView</excludedStandardButtons>
+        <massQuickActions>Issue_Temporary_Card</massQuickActions>
+        <massQuickActions>Mark_Temporary_Card_Returned</massQuickActions>
+        <searchResultsAdditionalFields>Date_Time__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Guest_Name__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Location__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Waiver_Status_Image__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Temporary_Card_Status_Image__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Temporary_Card__c</searchResultsAdditionalFields>
+    </searchLayouts>
     <sharingModel>ReadWrite</sharingModel>
     <visibility>Public</visibility>
 </CustomObject>

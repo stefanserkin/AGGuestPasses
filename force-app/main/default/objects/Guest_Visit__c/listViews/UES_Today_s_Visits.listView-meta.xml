@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>UES_Today_s_Visits</fullName>
+    <columns>NAME</columns>
+    <columns>Date_Time__c</columns>
+    <columns>Guest_Name__c</columns>
+    <columns>Waiver_Status_Image__c</columns>
+    <columns>Temporary_Card_Status_Image__c</columns>
+    <columns>Temporary_Card__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Location__c</field>
+        <operation>equals</operation>
+        <value>Upper East Side</value>
+    </filters>
+    <label>UES - Recent Visits</label>
+</ListView>

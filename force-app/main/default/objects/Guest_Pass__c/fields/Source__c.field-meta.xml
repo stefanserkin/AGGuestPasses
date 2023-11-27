@@ -29,6 +29,11 @@
                 <label>Membership</label>
             </value>
             <value>
+                <fullName>Promotion</fullName>
+                <default>false</default>
+                <label>Promotion</label>
+            </value>
+            <value>
                 <fullName>Trial</fullName>
                 <default>false</default>
                 <label>Trial</label>

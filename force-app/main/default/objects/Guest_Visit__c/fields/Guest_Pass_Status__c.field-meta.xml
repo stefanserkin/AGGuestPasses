@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Status__c</fullName>
-    <defaultValue>&quot;Valid&quot;</defaultValue>
+    <fullName>Guest_Pass_Status__c</fullName>
     <externalId>false</externalId>
-    <label>Status</label>
-    <required>true</required>
-    <trackHistory>false</trackHistory>
+    <label>Guest Pass Status</label>
+    <required>false</required>
+    <trackFeedHistory>true</trackFeedHistory>
+    <trackHistory>true</trackHistory>
     <trackTrending>false</trackTrending>
     <type>Picklist</type>
     <valueSet>
@@ -13,19 +13,14 @@
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
-                <fullName>Valid</fullName>
+                <fullName>Issued</fullName>
                 <default>false</default>
-                <label>Valid</label>
+                <label>Issued</label>
             </value>
             <value>
-                <fullName>Attended</fullName>
+                <fullName>Returned</fullName>
                 <default>false</default>
-                <label>Attended</label>
-            </value>
-            <value>
-                <fullName>Expired</fullName>
-                <default>false</default>
-                <label>Expired</label>
+                <label>Returned</label>
             </value>
         </valueSetDefinition>
     </valueSet>

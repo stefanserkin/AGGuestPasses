@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Waiver_Status_Image__c</fullName>
+    <externalId>false</externalId>
+    <formula>IF( !ISBLANK( TEXT( Waiver_Status__c ) ) , 
+  IMAGE(
+    CASE( Waiver_Status__c , 
+      &quot;Signed&quot;, &quot;https://asphaltgreen.file.force.com/servlet/servlet.ImageServer?id=0156Q000003Qhas&amp;oid=00DVB0000001IVx&amp;lastMod=1670343201000&quot;, 
+      &quot;Not Required&quot;, &quot;https://asphaltgreen.file.force.com/servlet/servlet.ImageServer?id=0156Q000003Qhax&amp;oid=00DVB0000001IVx&amp;lastMod=1670343248000&quot;,
+      &quot;Pending&quot;, &quot;https://asphaltgreen.file.force.com/servlet/servlet.ImageServer?id=0156Q000003Qhb2&amp;oid=00DVB0000001IVx&amp;lastMod=1670343236000&quot;, 
+      &quot;&quot;
+    ) ,
+    &quot;Waiver Status&quot; , 
+    25, 100
+  ), 
+  &quot;&quot;
+)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Waiver Status</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

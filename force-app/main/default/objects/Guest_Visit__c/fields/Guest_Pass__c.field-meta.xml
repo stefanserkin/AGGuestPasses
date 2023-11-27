@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Guest_Pass__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>The guest pass that was used for this visit</description>
+    <externalId>false</externalId>
+    <inlineHelpText>The guest pass that was used for this visit</inlineHelpText>
+    <label>Guest Pass</label>
+    <referenceTo>Guest_Pass__c</referenceTo>
+    <relationshipLabel>Guest Visits</relationshipLabel>
+    <relationshipName>Guest_Visits</relationshipName>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>
