@@ -1,0 +1,242 @@
+<!--  ----------------------------------------------------------------------  -->
+<!--  NOTE: Please add the following <META> element to your page <HEAD>.      -->
+<!--  If necessary, please modify the charset parameter to specify the        -->
+<!--  character set of your HTML page.                                        -->
+<!--  ----------------------------------------------------------------------  -->
+
+<META HTTP-EQUIV="Content-type" CONTENT="text/html; charset=UTF-8">
+
+    <style type="text/css">
+    
+    .W2L-container {
+        background-color: #f2f2f2;
+        border-radius: 5px;
+        padding: 20px;
+        width: 500px;
+    }
+    
+    .logo {
+        width: 200px;
+    }
+    
+    .flex-parent {
+        display: flex;
+    }
+    
+    .jc-center {
+        justify-content: center;
+    }
+    
+    .required-field::after {
+        color: red;
+        content: "*";
+    }
+    
+    input[type=text], select, textarea {
+        width: 100%; 
+        padding: 12px; 
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+        margin-top: 6px; 
+        margin-bottom: 16px; 
+        resize: vertical 
+    }
+    
+    input[type=email], select, textarea {
+        width: 100%; 
+        padding: 12px; 
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+        margin-top: 6px; 
+        margin-bottom: 16px; 
+        resize: vertical 
+    }
+    
+    input[type=submit] {
+        background-color: #1aa654;
+        color: white;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    
+    input[type=submit]:hover {
+        background-color: #157b3f;
+    }
+    </style>
+    
+    <div class="W2L-header">
+        <h1>Schedule Your Visit</h1>
+    </div>
+    
+    <div class="W2L-container">
+    <form action="https://test.salesforce.com/servlet/servlet.WebToLead?encoding=UTF-8&orgId=00DVB0000001IVx" method="POST">
+    <input type=hidden name="oid" value="00DVB0000001IVx">
+    <input type=hidden name="retURL" value="http://www.mets.com">
+    <input id="recordType" name="recordType" type="hidden" value="0126Q000000gix2" />
+    <input name="status" type="hidden" value="Open - Not Contacted" />
+    <input name="company" type="hidden" value="Individual" />
+    <!-- free day pass checkbox and expiration date -->
+    <input id="00NVB0000000R1p" name="00NVB0000000R1p" type="hidden" value="1" />
+    <input  id="00NVB0000000R53" name="00NVB0000000R53" type="hidden" value="12/31/2023" />
+    <!-- web-to-lead -->
+    <input id="00N6Q000003SUD7" name="00N6Q000003SUD7" type="hidden" value="1" />
+    <!-- utm source input  -->
+    <input id="00N6Q000003SUD6" name="00N6Q000003SUD6" type="hidden" value="" />
+    <!-- utm medium input -->
+    <input id="00N6Q000003SUD5" name="00N6Q000003SUD5" type="hidden" value="" />
+    <!-- utm campaign input  -->
+    <input id="00N6Q000003SUD4" name="00N6Q000003SUD4" type="hidden" value="" />
+    
+    <!--  ----------------------------------------------------------------------  -->
+    <!--  NOTE: These fields are optional debugging elements. Please uncomment    -->
+    <!--  these lines if you wish to test in debug mode.                          -->
+    <!--  <input type="hidden" name="debug" value=1>                              -->
+    <!--  <input type="hidden" name="debugEmail"                                  -->
+    <!--  value="sserkin@asphaltgreen.org">                                       -->
+    <!--  ----------------------------------------------------------------------  -->
+    
+    <br />
+    <label for="first_name">
+        <span class="required-field">First Name</span>
+    </label>
+    <input id="first_name" maxlength="40" name="first_name" required="" size="20" type="text" /><br />
+    
+    <label for="last_name">
+        <span class="required-field">Last Name</span>
+    </label>
+    <input id="last_name" maxlength="80" name="last_name" required="" size="20" type="text" /><br />
+    
+    <label for="phone">
+        <span class="required-field">Telephone Number</span>
+    </label>
+    <input id="phone" maxlength="40" name="phone" required="" size="20" type="text" /><br />
+    
+    <label for="email">
+        <span class="required-field">Email</span>
+    </label>
+    <input id="email" maxlength="80" name="email" required="" size="20" type="email" /><br />
+    
+    Membership Type Interested In 
+    <select id="00N6Q000003SUD3" name="00N6Q000003SUD3" title="Type of Membership">
+        <option value="">--None--</option>
+        <option value="Gold">Gold</option>
+        <option value="Family">Family</option>
+        <option value="Gym Only">Gym Only</option>
+        <option value="Daytime">Daytime</option>
+        <option value="Young Professional">Young Professional</option>
+        <option value="College Student">College Student</option>
+        <option value="Passport">Passport</option> 
+    </select><br />
+    
+    <span class="required-field">Preferred Location</span> 
+    <select id="00N6Q000003SUCy" name="00N6Q000003SUCy" required="" title="Location">
+        <option value="">--None--</option>
+        <option value="Battery Park City">Battery Park City</option>
+        <option value="Upper East Side">Upper East Side</option> 
+    </select><br />
+    
+    <label for="lead_source">How did you hear about us?</label> 
+    <select id="lead_source" name="lead_source">
+        <option value="">--None--</option>
+        <option value="Asphalt Green Non-Member Participant">Asphalt Green Non-Member Participant</option>
+        <option value="Email">Email</option>
+        <option value="Online">Online</option>
+        <option value="Social Media">Social Media</option>
+        <option value="Word of Mouth">Word of Mouth</option>
+        <option value="Other">Other</option> 
+    </select><br />
+    
+    <label for="If other, please specify" id="otherLabel">If other, please specify</label> 
+    <input id="00N6Q000003SUD0" maxlength="255" name="00N6Q000003SUD0" size="20" type="text" /><br />
+    
+    <input id="00N8D000004iM3W" name="00N8D000004iM3W" required="" type="checkbox" value="1" /> 
+    <span class="required-field">
+        I agree that I am 18 years of age or older and live in the Tri-State area. ID required.
+    </span><br />
+    
+    <!-- waiver signed -->
+    <input id="00NVB0000000RJZ" name="00NVB0000000RJZ" required="" type="checkbox" value="1" />
+    <span class="required-field">
+        I agree to the <a href="https://account.asphaltgreen.org/s/asphalt-green-liability-waiver" target="_blank">Terms and Conditions</a>.
+    </span><br />
+    
+    <input type="submit" name="submit">
+    
+    </form>
+    </div>
+    
+    
+    <script>
+        //Add flex to Expression Engine provided div
+        const cmsParent = document.querySelector(".W2L-container").parentNode;
+        cmsParent.classList.add("jc-center", "flex-parent");
+    
+    
+        function gigaStefanProcessingUnit5000() {
+    
+            let currentURL = window.location.href;
+            if (!currentURL) currentURL = "";
+    
+            let utm = {
+                source: "",
+                medium: "",
+                campaign: ""
+            };
+            //Grab hidden utm inputs
+            const sourceInput = document.getElementById("00N6Q000003SUD6");
+            const mediumInput = document.getElementById("00N6Q000003SUD5");
+            const campaignInput = document.getElementById("00N6Q000003SUD4");
+    
+            //Other dropdown
+            const otherField = document.getElementById("00N6Q000003SUD0");
+            const otherLabel = document.getElementById("otherLabel");
+            const leadSource = document.getElementById("lead_source");
+    
+            otherLabel.style.display = "none";
+            otherField.style.display = "none";
+    
+            //toggle visibility for other field
+            leadSource.addEventListener("change", function(){
+    
+              if (leadSource.value == "Other"){
+                otherField.style.display = "block";
+                otherLabel.style.display = "block";
+              }
+              else{
+                  otherField.style.display = "none";
+                  otherLabel.style.display = "none";
+                }
+    
+            });
+    
+            
+            //Parse utm values from url
+            if (currentURL.includes("utm_source=")) {
+                utm.source = currentURL.split("utm_source=")[1].split("&utm")[0];
+            }
+            if (currentURL.includes("utm_medium=")) {
+                utm.medium = currentURL.split("utm_medium=")[1].split("&utm")[0];
+            }
+            if (currentURL.includes("utm_campaign")) {
+                utm.campaign = currentURL.split("utm_campaign=")[1].split("&utm")[0];
+            }
+            //Sanity check so salesforce will never get undefined values
+            for (param in utm) {
+                if (!param) param = "";
+            }
+    
+            //Update input values with utm values
+            sourceInput.value = utm.source;
+            mediumInput.value = utm.medium;
+            campaignInput.value = utm.campaign;
+        }
+    
+        window.addEventListener("load", gigaStefanProcessingUnit5000);
+    
+    
+    </script>
+    
