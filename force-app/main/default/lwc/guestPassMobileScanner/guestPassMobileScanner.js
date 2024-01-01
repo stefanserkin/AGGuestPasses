@@ -4,15 +4,15 @@ import { getBarcodeScanner } from 'lightning/mobileCapabilities';
 import checkInGuestPass from '@salesforce/apex/GuestPassScannerController.checkInGuestPass';
 
 export default class GuestPassMobileScanner extends LightningElement {
-    myScanner;
+    scanner;
     scanButtonDisabled = false;
     scannedBarcode = '';
     result = '';
  
     // When component is initialized, detect whether to enable Scan button
     connectedCallback() {
-        this.myScanner = getBarcodeScanner();
-        if (this.myScanner == null || !this.myScanner.isAvailable()) {
+        this.scanner = getBarcodeScanner();
+        if (this.scanner == null || !this.scanner.isAvailable()) {
             this.scanButtonDisabled = true;
         }
     }
@@ -26,14 +26,14 @@ export default class GuestPassMobileScanner extends LightningElement {
 
         const scanningOptions = {
             barcodeTypes: [
-                this.myScanner.barcodeTypes.QR,
-                this.myScanner.barcodeTypes.EAN_8
+                this.scanner.barcodeTypes.QR,
+                this.scanner.barcodeTypes.EAN_8
             ],
             instructionText: 'Scan a QR Code',
             successText: 'Scanning complete.'
         };
 
-        this.myScanner.beginCapture(scanningOptions)
+        this.scanner.beginCapture(scanningOptions)
             .then((result) => {
                 this.scannedBarcode = result.value;
                 checkInGuestPass({ guestPassName: this.scannedBarcode })
@@ -75,7 +75,7 @@ export default class GuestPassMobileScanner extends LightningElement {
                 console.log('#finally');
                 // Clean up by ending capture,
                 // whether we completed successfully or had an error
-                this.myScanner.endCapture();
+                this.scanner.endCapture();
             });
     }
  

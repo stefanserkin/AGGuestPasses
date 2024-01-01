@@ -1,7 +1,7 @@
 public with sharing class GuestPassScannerController {
 
-    private static final String STATUS_VALID = 'Valid';
-    private static final String STATUS_ATTENDED = 'Attended';
+    @TestVisible private static final String STATUS_VALID = 'Valid';
+    @TestVisible private static final String STATUS_ATTENDED = 'Attended';
     private static final String INVALID_NUMBER_MESSAGE = 'Invalid Guest Pass Numbers';
 
     @AuraEnabled(cacheable=false)
