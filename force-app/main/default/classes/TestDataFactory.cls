@@ -93,6 +93,9 @@ public class TestDataFactory {
     // Groups
     private static final String PUBLIC_GROUP_NAME = 'Test Group Test';
     private static final String GROUP_TYPE_REGULAR = 'Regular';
+    // Guest Passes
+    private static final String GUEST_PASS_STATUS_VALID = 'Valid';
+    private static final String GUEST_PASS_SOURCE_MEMBERSHIP = 'Membership';
     // Journal Entries (TREX1)
     public static final String ADJUSTMENT_TYPE_DEBIT = 'Debit';
     public static final String ADJUSTMENT_TYPE_CREDIT = 'Credit';
@@ -996,6 +999,39 @@ public class TestDataFactory {
             DoesSendEmailToMembers = false
         );
         return newGroup;
+    }
+
+
+    /***********************************
+     * Guest Passes
+     ***********************************/
+
+    /**
+     * Create guest passes for a list of host members
+     * No DML - returns an unsaved list of guest passes
+     * @param Contact[] List of contacts to be hosts of passes
+     * @param Integer Number of guest passes to create for each contact
+     * @return Guest_Pass__c[] List of guest passes
+     */
+
+     public static List<Guest_Pass__c> createHostGuestPasses(
+        List<Contact> lstContacts,
+        Integer numGuestPasses
+     ) {
+        List<Guest_Pass__c> lstPasses = new List<Guest_Pass__c>();
+        for (Contact ct : lstContacts) {
+            for (Integer i = 0; i < numGuestPasses; i++) {
+                lstPasses.add(
+                    new Guest_Pass__c(
+                        Status__c = GUEST_PASS_STATUS_VALID,
+                        Source__c = GUEST_PASS_SOURCE_MEMBERSHIP,
+                        Host_Contact__c = ct.Id,
+                        Host_Account__c = ct.AccountId
+                    )
+                );
+            }
+        }
+        return lstPasses; 
     }
 
 

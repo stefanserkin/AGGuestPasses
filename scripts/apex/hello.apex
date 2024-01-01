@@ -5,6 +5,9 @@
 // You can also execute the entire file by running the command:
 //     SFDX: Execute Anonymous Apex with Editor Contents
 
-String guestPassName = 'AGPass-00000004';
-String result = GuestPassScannerController.checkInGuestPass(guestPassName);
-System.debug(':::::: result --> ' + result);
+String str = GuestPassMemberDashboardController.sendGuestPass(
+    'Invalid Id', 
+    'Stef', 
+    'Serk', 
+    'stefserk@invalidemail.com'
+);

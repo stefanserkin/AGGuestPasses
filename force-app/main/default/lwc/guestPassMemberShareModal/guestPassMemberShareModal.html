@@ -1,0 +1,61 @@
+<template>
+    <lightning-modal-header label={modalHeader}></lightning-modal-header>
+    <lightning-modal-body>
+        <!-- LIGHTNING SPINNER -->
+        <template lwc:if={isLoading}>
+            <lightning-spinner 
+                alternative-text="Loading" 
+                size="medium"
+            ></lightning-spinner>
+        </template>
+        
+        <!-- FORM -->
+        <div class="form-container">
+            <lightning-layout multiple-rows>
+                <!-- FIRST NAME -->
+                <lightning-layout-item size="12">
+                    <lightning-input type="text" 
+                        label="First Name" 
+                        onchange={handleFirstNameChange} 
+                        disabled={isLoading} 
+                        class="slds-var-p-around_medium" 
+                        required
+                    ></lightning-input>
+                </lightning-layout-item>
+                <!-- LAST NAME -->
+                <lightning-layout-item size="12">
+                    <lightning-input type="text" 
+                        label="Last Name" 
+                        onchange={handleLastNameChange} 
+                        disabled={isLoading} 
+                        class="slds-var-p-around_medium" 
+                        required
+                    ></lightning-input>
+                </lightning-layout-item>
+                <!-- EMAIL -->
+                <lightning-layout-item size="12">
+                    <lightning-input type="email" 
+                        label="Email address" 
+                        onchange={handleEmailChange} 
+                        disabled={isLoading} 
+                        class="slds-var-p-around_medium" 
+                        required
+                    ></lightning-input>
+                </lightning-layout-item>
+                <!-- SUBMIT BUTTON -->
+                <lightning-layout-item size="12">
+                    <lightning-button variant="brand" 
+                        title="Send Invitation" 
+                        label="Send Invitation" 
+                        icon-name="utility:send" 
+                        icon-position="left" 
+                        onclick={handleSubmit} 
+                        disabled={isLoading} 
+                        class="slds-var-p-around_medium slds-align_absolute-center"
+                    ></lightning-button>
+                </lightning-layout-item>
+            </lightning-layout>
+        </div>
+    </lightning-modal-body>
+    <lightning-modal-footer></lightning-modal-footer>    
+</template>
