@@ -162,13 +162,20 @@
     <externalSharingModel>Private</externalSharingModel>
     <label>Guest Pass</label>
     <nameField>
-        <displayFormat>Pass-{0000000}</displayFormat>
+        <displayFormat>AGPass-{00000000}</displayFormat>
         <label>Guest Pass Name</label>
         <trackHistory>false</trackHistory>
         <type>AutoNumber</type>
     </nameField>
     <pluralLabel>Guest Passes</pluralLabel>
-    <searchLayouts></searchLayouts>
+    <searchLayouts>
+        <searchResultsAdditionalFields>Guest_Full_Name__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Location__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Status__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Visit_Date_Time__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Waiver_Signed__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Expiration_Date__c</searchResultsAdditionalFields>
+    </searchLayouts>
     <sharingModel>ReadWrite</sharingModel>
     <visibility>Public</visibility>
 </CustomObject>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Valid_Guest_Passes_BPC</fullName>
+    <columns>NAME</columns>
+    <columns>Guest_Full_Name__c</columns>
+    <columns>Location__c</columns>
+    <columns>Source__c</columns>
+    <columns>Status__c</columns>
+    <columns>Visit_Date_Time__c</columns>
+    <columns>Waiver_Signed__c</columns>
+    <columns>Expiration_Date__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Status__c</field>
+        <operation>equals</operation>
+        <value>Valid</value>
+    </filters>
+    <filters>
+        <field>Location__c</field>
+        <operation>equals</operation>
+        <value>Battery Park City</value>
+    </filters>
+    <label>Valid Guest Passes - BPC</label>
+</ListView>
