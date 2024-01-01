@@ -63,33 +63,14 @@
                     
                 </div>
             </template>
-
-
         </template>
 
         <!-- NO GUEST PASSES FOUND -->
         <template lwc:else>
-            <p>{noGuestPassesMessage}</p>
+            <p class="slds-var-p-around_medium">
+                {noGuestPassesMessage}
+            </p>
         </template>
-
-        <!--
-        <div class="slds-var-m-around_medium">
-            Available Passes:&nbsp;
-            <lightning-formatted-number 
-                value={numAvailableGuestPasses} 
-                maximum-fraction-digits=0
-            ></lightning-formatted-number>
-        </div>
-        <template lwc:if={hasAvailablePasses}>
-            <div>
-                <lightning-button 
-                    variant="brand-outline" 
-                    title="Share Guest Pass" 
-                    label="Share Guest Pass" 
-                    onclick={handleSharePass}
-                ></lightning-button>
-            </div>
-        </template>
-        -->
+        
     </lightning-card>
 </template>
