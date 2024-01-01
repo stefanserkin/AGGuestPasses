@@ -1,7 +1,7 @@
 import { LightningElement } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { getBarcodeScanner } from 'lightning/mobileCapabilities';
-import checkInGuestPass from '@salesforce/apex/GuestPassScannerController.checkInGuestPass';
+import checkInGuestPass from '@salesforce/apex/GuestPassController.checkInGuestPass';
 
 export default class GuestPassMobileScanner extends LightningElement {
     scanner;

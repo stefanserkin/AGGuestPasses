@@ -3,7 +3,7 @@ import { getRecord } from 'lightning/uiRecordApi';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { refreshApex } from '@salesforce/apex';
 import GuestFormModal from 'c/guestPassMemberShareModal';
-import getHostGuestPasses from '@salesforce/apex/GuestPassMemberDashboardController.getHostGuestPasses';
+import getHostGuestPasses from '@salesforce/apex/GuestPassController.getHostGuestPasses';
 import USER_ID from '@salesforce/user/Id';
 import ACCOUNTID_FIELD from '@salesforce/schema/User.AccountId';
 

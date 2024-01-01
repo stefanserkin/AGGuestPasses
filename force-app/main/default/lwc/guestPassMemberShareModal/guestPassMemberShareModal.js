@@ -1,6 +1,6 @@
 import { api } from 'lwc';
 import LightningModal from 'lightning/modal';
-import sendGuestPass from '@salesforce/apex/GuestPassMemberDashboardController.sendGuestPass';
+import sendGuestPass from '@salesforce/apex/GuestPassController.sendGuestPass';
 
 export default class GuestPassMemberShareModal extends LightningModal {
     @api guestPass;
