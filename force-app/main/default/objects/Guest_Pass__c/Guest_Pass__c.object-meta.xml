@@ -163,7 +163,7 @@
     <label>Guest Pass</label>
     <nameField>
         <displayFormat>AGPass-{00000000}</displayFormat>
-        <label>Guest Pass Name</label>
+        <label>Guest Pass Number</label>
         <trackHistory>false</trackHistory>
         <type>AutoNumber</type>
     </nameField>
