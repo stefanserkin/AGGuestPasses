@@ -2,6 +2,14 @@ public without sharing class GuestPassService {
 
     @TestVisible private static final String STATUS_VALID = 'Valid';
     @TestVisible private static final String STATUS_ATTENDED = 'Attended';
+    @TestVisible private static final String STATUS_EXPIRED = 'Expired';
+    @TestVisible private static final string LEAD_STATUS_DEFAULT = 'Open - Not Contacted';
+    @TestVisible private static final string LEAD_COMPANY_DEFAULT = 'Individual';
+
+    private static final String LEAD_KEY_PREFIX = Lead.sObjectType.getDescribe().getKeyPrefix();
+    private static final String CONTACT_KEY_PREFIX = Contact.sObjectType.getDescribe().getKeyPrefix();
+
+    private static Id membershipLeadRecordTypeId;
 
     /**
      * @description Get all guest passes related to a particular host account
@@ -33,9 +41,9 @@ public without sharing class GuestPassService {
             }
 
             // Check keyprefix for contact or lead
-            if (whoId.startsWith('003')) {
+            if (whoId.startsWith(CONTACT_KEY_PREFIX)) {
                 gp.Contact__c = whoId;
-            } else if (whoId.startsWith('00Q')) {
+            } else if (whoId.startsWith(LEAD_KEY_PREFIX)) {
                 gp.Lead__c = whoId;
             }
 
@@ -149,14 +157,13 @@ public without sharing class GuestPassService {
         GuestPass guestPass
     ) {
         Lead ld = new Lead();
-        ld.RecordTypeId = Schema.SObjectType.Lead.getRecordTypeInfosByDeveloperName()
-            .get('Membership').getRecordTypeId();
-        ld.Company = 'Individual';
+        ld.RecordTypeId = getMembershipLeadRecordTypeId();
+        ld.Company = LEAD_COMPANY_DEFAULT;
         ld.FirstName = guestPass.guestFirstName;
         ld.LastName = guestPass.guestLastName;
         ld.Email = guestPass.guestEmail;
         ld.LeadSource = 'Guest Visit';
-        ld.Status = 'Open - Not Contacted';
+        ld.Status = LEAD_STATUS_DEFAULT;
         insert ld;
         return ld;
     }
@@ -190,6 +197,18 @@ public without sharing class GuestPassService {
               WITH USER_MODE
              LIMIT 1
         ];
+    }
+
+    /**
+     * @description Retrieve Lead membership record type id
+     */
+    @TestVisible
+    private static Id getMembershipLeadRecordTypeId() {
+        if (membershipLeadRecordTypeId == null) {
+            membershipLeadRecordTypeId = Schema.SObjectType.Lead.getRecordTypeInfosByDeveloperName()
+                .get('Membership').getRecordTypeId();
+        }
+        return membershipLeadRecordTypeId;
     }
     
 }

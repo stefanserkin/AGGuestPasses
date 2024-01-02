@@ -5,9 +5,4 @@
 // You can also execute the entire file by running the command:
 //     SFDX: Execute Anonymous Apex with Editor Contents
 
-String str = GuestPassMemberDashboardController.sendGuestPass(
-    'Invalid Id', 
-    'Stef', 
-    'Serk', 
-    'stefserk@invalidemail.com'
-);
+System.debug('::: clear');

@@ -17,7 +17,7 @@ export default class GuestPassMobileScanner extends LightningElement {
         }
     }
  
-    //When Scan Barcode button is clicked, scan the barcode and read the value
+    // When Scan Barcode button is clicked, scan the barcode and read the value
     handleScanBarcode(event) {
         event.preventDefault();
 
