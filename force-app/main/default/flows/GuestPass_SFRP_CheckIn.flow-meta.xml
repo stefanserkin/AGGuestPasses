@@ -163,6 +163,7 @@
         </faultConnector>
         <inputReference>recordId</inputReference>
     </recordUpdates>
+    <runInMode>SystemModeWithoutSharing</runInMode>
     <screens>
         <name>Confirm_Screen</name>
         <label>Confirm Screen</label>
