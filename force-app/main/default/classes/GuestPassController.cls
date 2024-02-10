@@ -39,14 +39,16 @@ public with sharing class GuestPassController {
     }
 
     @AuraEnabled(cacheable=false)
-    public static String checkInGuestPass(
-        String guestPassName
+    public static GuestPassService.ScanResult checkInGuestPass(
+        String guestPassName, 
+        String scanningLocationId
     ) {
         try {
-            GuestPassService.checkInGuestPassesByName(
-                new Set<String>{ guestPassName }
+            List<GuestPassService.ScanResult> lstScanResults = GuestPassService.checkInGuestPassesByName(
+                new Set<String>{ guestPassName }, 
+                scanningLocationId
             );
-            return 'success';
+            return lstScanResults[0];
         } catch (Exception e) {
             throw new AuraHandledException(e.getMessage());
         }

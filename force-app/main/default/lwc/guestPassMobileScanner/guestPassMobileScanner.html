@@ -1,27 +1,37 @@
 <template>
     <div class="slds-card">
         <div class="slds-text-align_center">
-            <span class="slds-text-heading_large">Scan Guest Pass</span>
+            <span class="slds-text-heading_large">{appHeader}</span>
         </div>
  
         <!-- After a barcode is successfully scanned, its value is displayed here: -->
         <template lwc:if={scannedBarcode}>
             <div class="slds-var-m-vertical_large slds-var-p-vertical_medium 
                 slds-text-align_center slds-border_top slds-border_bottom">
-                Scanned barcode value is:<br/>
+                Scanned Guest Pass:<br/>
                 <span class="slds-text-heading_small">{scannedBarcode}</span><br/>
-                <!--Result:<br/>
-                <span class="slds-text-heading_small">{result}</span><br/>-->
+                Result:<br/>
+                <span class="slds-text-heading_small">{resultMessage}</span><br/>
             </div>
         </template>
  
         <!-- Static help text for disabled/enabled button -->
         <div class="slds-text-align_center slds-text-color_weak slds-m-vertical_large">
-            <template lwc:if={scanButtonDisabled}>
+            <template lwc:if={scannerUnavailable}>
                 The scanner is not available for this type of device.
             </template>
-            <template lwc:else>
+            <template lwc:elseif={hasSelectedLocation}>
                 Click <strong>Scan Barcode</strong> to open the camera. Position a barcode in the scanner view to scan it.
+            </template>
+            <template lwc:else>
+                <lightning-combobox
+                    name="locations"
+                    label="Scanning Location"
+                    placeholder="Select a Location"
+                    onchange={handleLocationChange}
+                    options={locationOptions}
+                    class="slds-align_absolute-center slds-var-m-around_large"
+                ></lightning-combobox>
             </template>
         </div>
  
@@ -29,12 +39,20 @@
         <div class="slds-align_absolute-center slds-m-vertical_large">
             <lightning-button
                 variant="brand"
-                class="slds-var-m-left_x-small"
                 disabled={scanButtonDisabled}
                 icon-name="utility:scan"
                 label="Scan Barcode"
                 title="Open the camera view and look for a barcode to scan"
                 onclick={handleScanBarcode}>
+            </lightning-button>
+        </div>
+        <div lwc:if={hasSelectedLocation} class="slds-align_absolute-center slds-m-verical_large">
+            <lightning-button
+                variant="neutral"
+                icon-name="action:change_record_type"
+                label="Change Location"
+                title="Change Location"
+                onclick={handleRemoveLocation}>
             </lightning-button>
         </div>
     </div>

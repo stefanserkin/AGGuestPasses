@@ -1,20 +1,69 @@
-import { LightningElement } from 'lwc';
+import { LightningElement, wire } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { getBarcodeScanner } from 'lightning/mobileCapabilities';
 import checkInGuestPass from '@salesforce/apex/GuestPassController.checkInGuestPass';
+import getLocations from '@salesforce/apex/GuestPassScannerController.getScannerLocations';
 
 export default class GuestPassMobileScanner extends LightningElement {
+    isLoading = false;
+    error;
+
     scanner;
-    scanButtonDisabled = false;
     scannedBarcode = '';
-    result = '';
+    resultMessage = '';
+
+    wiredLocations = [];
+    locationOptions = [];
+    selectedLocationId;
+    selectedLocationName;
  
     // When component is initialized, detect whether to enable Scan button
     connectedCallback() {
         this.scanner = getBarcodeScanner();
-        if (this.scanner == null || !this.scanner.isAvailable()) {
-            this.scanButtonDisabled = true;
+    }
+
+    @wire(getLocations)
+    wiredResult(result) {
+        this.isLoading = true;
+        this.wiredLocations = result;
+        if (result.data) {
+            result.data.forEach(row => {
+                this.locationOptions = [...this.locationOptions, {value: row.Id, label: row.Name}];
+            });
+            this.error = undefined;
+        } else if (result.error) {
+            this.locations = undefined;
+            this.error = result.error;
+            console.error(this.error);
         }
+    }
+
+    get appHeader() {
+        return this.selectedLocationId == null
+            ? `Select a Location`
+            : `Scan Guest Passes for ${this.selectedLocationName}`;
+    }
+
+    get scannerUnavailable() {
+        return (this.scanner == null || !this.scanner.isAvailable());
+    }
+
+    get hasSelectedLocation() {
+        return this.selectedLocationId != null && this.selectedLocationId.length > 0;
+    }
+
+    get scanButtonDisabled() {
+        return (this.scannerUnavailable || !this.hasSelectedLocation);
+    }
+
+    handleLocationChange(event) {
+        this.selectedLocationId = event.detail.value;
+        this.selectedLocationName = event.target.options.find(opt => opt.value === this.selectedLocationId).label;
+    }
+
+    handleRemoveLocation() {
+        this.selectedLocationId = null;
+        this.selectedLocationName = null;
     }
  
     // When Scan Barcode button is clicked, scan the barcode and read the value
@@ -36,16 +85,30 @@ export default class GuestPassMobileScanner extends LightningElement {
         this.scanner.beginCapture(scanningOptions)
             .then((result) => {
                 this.scannedBarcode = result.value;
-                checkInGuestPass({ guestPassName: this.scannedBarcode })
-                    .then((checkInResult) => {
-                        this.result = checkInResult;
-                        this.dispatchEvent(
-                            new ShowToastEvent({
-                                title: 'Successful Scan',
-                                message: 'Barcode scanned successfully.',
-                                variant: 'success'
-                            })
-                        );
+                checkInGuestPass({ 
+                    guestPassName: this.scannedBarcode, 
+                    scanningLocationId: this.selectedLocationId 
+                })
+                    .then((scanResult) => {
+                        this.resultMessage = scanResult.isSuccess ? 'Checked In' : scanResult.errorMessage;
+                        if (scanResult.isSuccess) {
+                            this.dispatchEvent(
+                                new ShowToastEvent({
+                                    title: 'Success',
+                                    message: `Guest Pass ${scanResult.name} was successfully checked in`,
+                                    variant: 'success'
+                                })
+                            );
+                        } else {
+                            this.dispatchEvent(
+                                new ShowToastEvent({
+                                    title: 'Scan Failed',
+                                    message: `Failed to check in Guest Pass ${scanResult.name}. Error: ${scanResult.errorMessage}`,
+                                    variant: 'error'
+                                })
+                            );
+                        }
+                        
                     })
                     .catch((error) => {
                         console.error(error);
@@ -54,17 +117,18 @@ export default class GuestPassMobileScanner extends LightningElement {
             })
             .catch((error) => {
                 // Handle cancellation and unexpected errors here
-                console.error('Scan Error: ' + JSON.stringify(error));
-                if (error.code == 'userDismissedScanner') {
+                if (error.code == 'USER_DISMISSED') {
                     // User clicked Cancel
-                    this.dispatchToastEvent('Scanning Cancelled',
+                    this.dispatchToastEvent(
+                        'Scanning Cancelled',
                         'You cancelled the scanning session.',
-                        'error',
-                        'sticky'
+                        'info',
+                        'dismissible'
                     );
                 } else { 
                     // Inform the user we ran into something unexpected
-                    this.dispatchToastEvent('Barcode Scanner Error',
+                    this.dispatchToastEvent(
+                        'Scan Error',
                         'There was a problem scanning the barcode: ' + error.message,
                         'error',
                         'sticky'
@@ -72,7 +136,6 @@ export default class GuestPassMobileScanner extends LightningElement {
                 }
             })
             .finally(() => {
-                console.log('#finally');
                 // Clean up by ending capture,
                 // whether we completed successfully or had an error
                 this.scanner.endCapture();

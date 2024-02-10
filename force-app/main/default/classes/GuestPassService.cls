@@ -57,23 +57,54 @@ public without sharing class GuestPassService {
      * @description For a provided list of guest pass names, update the Status
      *  to 'Attended' and record the date/time of the visit
      */
-    public static void checkInGuestPassesByName(
-        Set<String> setGuestPassNames
+    public static List<ScanResult> checkInGuestPassesByName(
+        Set<String> setGuestPassNames,
+        String scanningLocationId
     ) {
+        List<ScanResult> lstScanResults = new List<ScanResult>();
         List<Guest_Pass__c> lstPasses = queryForGuestPassesByName(setGuestPassNames);
 
         List<Guest_Pass__c> lstPassesToUpdate = new List<Guest_Pass__c>();
         for (Guest_Pass__c gp : lstPasses) {
-            if (gp.Status__c == STATUS_VALID) {
+            Boolean hasError = false;
+            String errorMessage;
+
+            // Check for invalid guest pass statuses
+            if (gp.Status__c == STATUS_ATTENDED) {
+                hasError = true;
+                errorMessage = 'Guest pass has already been used';
+            } else if (gp.Status__c == STATUS_EXPIRED) {
+                hasError = true;
+                errorMessage = 'Guest pass has expired';
+            }
+
+            // Check for incorrect location
+            if (gp.Location__c != scanningLocationId) {
+                // In the future, we might decide to block this check-in and return a failure message
+                // For now, simply update the location
+                gp.Location__c = scanningLocationId;
+            }
+
+            // Check in pass
+            if (!hasError) {
                 gp.Status__c = STATUS_ATTENDED;
                 gp.Visit_Date_Time__c = Datetime.now();
                 lstPassesToUpdate.add(gp);
             }
+
+            ScanResult sr = new ScanResult();
+            sr.id = gp.Id;
+            sr.name = gp.Name;
+            sr.isSuccess = !hasError;
+            sr.errorMessage = errorMessage != null ? errorMessage : '';
+            lstScanResults.add(sr);
         }
 
         if (!lstPassesToUpdate.isEmpty()) {
-            update lstPassesToUpdate;
+            Database.update(lstPassesToUpdate, AccessLevel.USER_MODE);
         }
+
+        return lstScanResults;
     }
 
     /**
@@ -191,7 +222,7 @@ public without sharing class GuestPassService {
         Set<String> setGuestPassNames
     ) {
         return [
-            SELECT Id, Name, Status__c, Visit_Date_Time__c
+            SELECT Id, Name, Status__c, Visit_Date_Time__c, Location__c, Location__r.Name
               FROM Guest_Pass__c 
              WHERE Name IN :setGuestPassNames
               WITH USER_MODE
@@ -209,6 +240,20 @@ public without sharing class GuestPassService {
                 .get('Membership').getRecordTypeId();
         }
         return membershipLeadRecordTypeId;
+    }
+
+    /**
+     * @description Data wrapper to represent a scan result
+     */
+    public class ScanResult {
+        @AuraEnabled
+        public String id {get; set;}
+        @AuraEnabled
+        public String name {get; set;}
+        @AuraEnabled
+        public Boolean isSuccess {get; set;}
+        @AuraEnabled
+        public String errorMessage {get; set;}
     }
     
 }
