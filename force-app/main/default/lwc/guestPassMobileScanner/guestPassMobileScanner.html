@@ -5,7 +5,7 @@
         </div>
  
         <!-- After a barcode is successfully scanned, its value is displayed here: -->
-        <template if:true={scannedBarcode}>
+        <template lwc:if={scannedBarcode}>
             <div class="slds-var-m-vertical_large slds-var-p-vertical_medium 
                 slds-text-align_center slds-border_top slds-border_bottom">
                 Scanned barcode value is:<br/>
@@ -15,10 +15,14 @@
             </div>
         </template>
  
-        <!-- Static help text -->
+        <!-- Static help text for disabled/enabled button -->
         <div class="slds-text-align_center slds-text-color_weak slds-m-vertical_large">
-            Click <strong>Scan Barcode</strong> to open a barcode scanner camera view. Position a
-            barcode in the scanner view to scan it.
+            <template lwc:if={scanButtonDisabled}>
+                The scanner is not available for this type of device.
+            </template>
+            <template lwc:else>
+                Click <strong>Scan Barcode</strong> to open the camera. Position a barcode in the scanner view to scan it.
+            </template>
         </div>
  
         <!-- The click-to-scan button; Disabled if BarcodeScanner isn't available -->
@@ -29,7 +33,7 @@
                 disabled={scanButtonDisabled}
                 icon-name="utility:scan"
                 label="Scan Barcode"
-                title="Open a camera view and look for a barcode to scan"
+                title="Open the camera view and look for a barcode to scan"
                 onclick={handleScanBarcode}>
             </lightning-button>
         </div>
