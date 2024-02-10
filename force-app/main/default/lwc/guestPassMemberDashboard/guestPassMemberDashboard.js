@@ -42,7 +42,7 @@ export default class GuestPassMemberDashboard extends LightningElement {
             rows.forEach(row => {
                 if (row.guestFirstName != null) {
                     row.guestName = row.guestFirstName + ' ' + row.guestLastName;
-                    row.guestInfo = 'Shared with ' + row.guestName + ' on ' + row.dateShared;
+                    row.guestInfo = 'Shared with ' + row.guestName + ' on ' + this.formatDateString(row.dateShared);
                 }
             });
             this.guestPasses = rows;
@@ -67,17 +67,10 @@ export default class GuestPassMemberDashboard extends LightningElement {
             description: 'Share guest pass with a guest',
             guestPass: selectedPass,
         });
-        // Closed modals with successfully submitted forms will return 'success'
-        if (result == 'success') {
-            this.dispatchEvent(
-                new ShowToastEvent({
-                    title: 'Invitation Sent!',
-                    message: `The guest pass was sent.`,
-                    variant: 'success'
-                })
-            );
-            this.refreshComponent();
-        } else if (result == 'error') {
+
+        if (!result) return;
+
+        if (result == 'error') {
             this.dispatchEvent(
                 new ShowToastEvent({
                     title: 'An Error Occurred',
@@ -85,6 +78,16 @@ export default class GuestPassMemberDashboard extends LightningElement {
                     variant: 'error'
                 })
             );
+        } // Closed modals with successfully submitted forms will return the guest's first name
+        else if (result.length > 0) {
+            this.dispatchEvent(
+                new ShowToastEvent({
+                    title: 'Invitation Sent!',
+                    message: `We sent ${result} an email with instructions on how to use the pass. Thanks for sharing Asphalt Green!`,
+                    variant: 'success'
+                })
+            );
+            this.refreshComponent();
         }
     }
 
@@ -94,6 +97,18 @@ export default class GuestPassMemberDashboard extends LightningElement {
 
     refreshComponent() {
         refreshApex(this.wiredGuestPasses);
+    }
+
+    /**
+     * Utils
+     */
+
+    formatDateString(date) {
+        const options = {
+            year: "numeric", month: "numeric", day: "numeric"
+        };
+        let dt = new Date( date );
+        return new Intl.DateTimeFormat('en-US', options).format(dt);
     }
 
 }

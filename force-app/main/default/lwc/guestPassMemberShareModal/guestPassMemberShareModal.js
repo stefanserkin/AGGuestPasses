@@ -44,7 +44,7 @@ export default class GuestPassMemberShareModal extends LightningModal {
                 email: this.email 
             }).then((result) => {
                 this.isLoading = false;
-                this.close('success');
+                this.close(this.firstName);
             }).catch((error) => {
                 this.error = error;
                 console.error(this.error);

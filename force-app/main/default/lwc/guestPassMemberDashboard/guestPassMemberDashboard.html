@@ -22,7 +22,7 @@
                             ></lightning-input>
                         </lightning-layout-item>
                         <!-- STATUS -->
-                        <lightning-layout-item class="slds-align_absolute-center" size="4" padding="around-small">
+                        <lightning-layout-item class="slds-align_absolute-center" size="3" padding="around-small">
                             <lightning-input 
                                 type="text" 
                                 label="Status" 
@@ -31,15 +31,12 @@
                             ></lightning-input>
                         </lightning-layout-item>
                         <!-- GUEST NAME -->
-                        <lightning-layout-item class="slds-align_absolute-center" size="4" padding="around-small">
+                        <lightning-layout-item class="slds-align_absolute-center" size="5" padding="around-small">
                             <template lwc:if={pass.guestName}>
                                 <!-- VIEW PASS INFO -->
-                                <lightning-input 
-                                    type="text" 
-                                    label="Guest" 
-                                    value={pass.guestInfo} 
-                                    readonly
-                                ></lightning-input>
+                                <lightning-formatted-text 
+                                    value={pass.guestInfo}
+                                ></lightning-formatted-text>
                             </template>
                             <template lwc:else>
                                 <!-- SHARE WITH GUEST -->
