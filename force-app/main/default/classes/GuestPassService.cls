@@ -7,6 +7,7 @@ public without sharing class GuestPassService {
     @TestVisible private static final String STATUS_EXPIRED = 'Expired';
     @TestVisible private static final string LEAD_STATUS_DEFAULT = 'Unqualified';
     @TestVisible private static final string LEAD_COMPANY_DEFAULT = 'Individual';
+    @TestVisible private static final string LEAD_SOURCE = 'Member Guest Pass';
 
     // TODO Add custom labels to re-use these messages in screen flows
     private static Map<String, String> mapInvalidCheckinStatuses = new Map<String, String>{
@@ -62,7 +63,7 @@ public without sharing class GuestPassService {
             gp.Status__c = STATUS_INVITED;
 
             // Update guest pass record
-            Database.update(gp, AccessLevel.USER_MODE);
+            Database.update(gp, AccessLevel.SYSTEM_MODE);
         } catch (Exception e) {
             throw new AuraHandledException(e.getMessage());
         }
@@ -76,10 +77,8 @@ public without sharing class GuestPassService {
         Set<String> setGuestPassNames,
         String scanningLocationId
     ) {
-        System.debug('::: entered check in');
         List<ScanResult> lstScanResults = new List<ScanResult>();
         List<Guest_Pass__c> lstPasses = queryForGuestPassesByName(setGuestPassNames);
-        System.debug('::: lstPasses size --> ' + lstPasses.size());
 
         List<Guest_Pass__c> lstPassesToUpdate = new List<Guest_Pass__c>();
         for (Guest_Pass__c gp : lstPasses) {
@@ -88,14 +87,12 @@ public without sharing class GuestPassService {
 
             // Check for invalid guest pass statuses
             if (mapInvalidCheckinStatuses.containsKey(gp.Status__c)) {
-                System.debug('::: contains key in invalid status');
                 hasError = true;
                 errorMessage = mapInvalidCheckinStatuses.get(gp.Status__c);
             }
 
             // Check for incorrect location
             if (gp.Location__c != scanningLocationId) {
-                System.debug('::: location mismatch');
                 // In the future, we might decide to block this check-in and return a failure message
                 // For now, simply update the location
                 gp.Location__c = scanningLocationId;
@@ -103,7 +100,6 @@ public without sharing class GuestPassService {
 
             // Check in pass
             if (!hasError) {
-                System.debug('::: ready to check in');
                 gp.Status__c = STATUS_ATTENDED;
                 gp.Visit_Date_Time__c = Datetime.now();
                 lstPassesToUpdate.add(gp);
@@ -115,18 +111,14 @@ public without sharing class GuestPassService {
             sr.name = gp.Name;
             sr.isSuccess = !hasError;
             sr.errorMessage = errorMessage;
-            System.debug('::: scanresult obj --> ' + sr);
             lstScanResults.add(sr);
         }
 
         if (!lstPassesToUpdate.isEmpty()) {
-            System.debug('::: updating passes');
-            // TODO Why is this failing? Need to identify access issue before heading to prod
-            // Database.update(lstPassesToUpdate, AccessLevel.USER_MODE);
-            update lstPassesToUpdate;
+            // TODO Why is this update failing with user mode?
+            Database.update(lstPassesToUpdate, AccessLevel.SYSTEM_MODE);
         }
 
-        System.debug(':::: lstScanResults --> ' + lstScanResults);
         return lstScanResults;
     }
 
@@ -216,7 +208,7 @@ public without sharing class GuestPassService {
         ld.FirstName = guestPass.guestFirstName;
         ld.LastName = guestPass.guestLastName;
         ld.Email = guestPass.guestEmail;
-        ld.LeadSource = 'Guest Visit';
+        ld.LeadSource = LEAD_SOURCE;
         ld.Status = LEAD_STATUS_DEFAULT;
         Database.insert(ld, AccessLevel.SYSTEM_MODE);
         return ld;
