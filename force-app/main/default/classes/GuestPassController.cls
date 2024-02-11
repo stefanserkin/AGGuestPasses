@@ -44,10 +44,14 @@ public with sharing class GuestPassController {
         String scanningLocationId
     ) {
         try {
+            System.debug('::: guestPassName --> ' + guestPassName);
+            System.debug('::: scanningLocationId --> ' + scanningLocationId);
             List<GuestPassService.ScanResult> lstScanResults = GuestPassService.checkInGuestPassesByName(
                 new Set<String>{ guestPassName }, 
                 scanningLocationId
             );
+            System.debug('::: lstScanResults size --> ' + lstScanResults.size());
+            System.debug('::: lstScanResults isSuccess --> ' + lstScanResults[0].isSuccess);
             return lstScanResults[0];
         } catch (Exception e) {
             throw new AuraHandledException(e.getMessage());

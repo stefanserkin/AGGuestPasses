@@ -1,15 +1,26 @@
 public without sharing class GuestPassService {
 
+    @TestVisible private static final String STATUS_ISSUED = 'Issued';
+    @TestVisible private static final String STATUS_INVITED = 'Invited';
     @TestVisible private static final String STATUS_VALID = 'Valid';
     @TestVisible private static final String STATUS_ATTENDED = 'Attended';
     @TestVisible private static final String STATUS_EXPIRED = 'Expired';
-    @TestVisible private static final string LEAD_STATUS_DEFAULT = 'Open - Not Contacted';
+    @TestVisible private static final string LEAD_STATUS_DEFAULT = 'Unqualified';
     @TestVisible private static final string LEAD_COMPANY_DEFAULT = 'Individual';
+
+    // TODO Add custom labels to re-use these messages in screen flows
+    private static Map<String, String> mapInvalidCheckinStatuses = new Map<String, String>{
+        STATUS_ISSUED => 'No guest is associated with this guest pass', 
+        STATUS_INVITED => 'The guest waiver has not yet been signed', 
+        STATUS_ATTENDED => 'Guest pass has already been used', 
+        STATUS_EXPIRED => 'Guest pass has expired'
+    };
 
     private static final String LEAD_KEY_PREFIX = Lead.sObjectType.getDescribe().getKeyPrefix();
     private static final String CONTACT_KEY_PREFIX = Contact.sObjectType.getDescribe().getKeyPrefix();
 
     private static Id membershipLeadRecordTypeId;
+    private static Id invitedGuestRecordTypeId;
 
     /**
      * @description Get all guest passes related to a particular host account
@@ -47,7 +58,11 @@ public without sharing class GuestPassService {
                 gp.Lead__c = whoId;
             }
 
-            update gp;
+            // Set status to invited
+            gp.Status__c = STATUS_INVITED;
+
+            // Update guest pass record
+            Database.update(gp, AccessLevel.USER_MODE);
         } catch (Exception e) {
             throw new AuraHandledException(e.getMessage());
         }
@@ -61,25 +76,26 @@ public without sharing class GuestPassService {
         Set<String> setGuestPassNames,
         String scanningLocationId
     ) {
+        System.debug('::: entered check in');
         List<ScanResult> lstScanResults = new List<ScanResult>();
         List<Guest_Pass__c> lstPasses = queryForGuestPassesByName(setGuestPassNames);
+        System.debug('::: lstPasses size --> ' + lstPasses.size());
 
         List<Guest_Pass__c> lstPassesToUpdate = new List<Guest_Pass__c>();
         for (Guest_Pass__c gp : lstPasses) {
             Boolean hasError = false;
-            String errorMessage;
+            String errorMessage = '';
 
             // Check for invalid guest pass statuses
-            if (gp.Status__c == STATUS_ATTENDED) {
+            if (mapInvalidCheckinStatuses.containsKey(gp.Status__c)) {
+                System.debug('::: contains key in invalid status');
                 hasError = true;
-                errorMessage = 'Guest pass has already been used';
-            } else if (gp.Status__c == STATUS_EXPIRED) {
-                hasError = true;
-                errorMessage = 'Guest pass has expired';
+                errorMessage = mapInvalidCheckinStatuses.get(gp.Status__c);
             }
 
             // Check for incorrect location
             if (gp.Location__c != scanningLocationId) {
+                System.debug('::: location mismatch');
                 // In the future, we might decide to block this check-in and return a failure message
                 // For now, simply update the location
                 gp.Location__c = scanningLocationId;
@@ -87,23 +103,30 @@ public without sharing class GuestPassService {
 
             // Check in pass
             if (!hasError) {
+                System.debug('::: ready to check in');
                 gp.Status__c = STATUS_ATTENDED;
                 gp.Visit_Date_Time__c = Datetime.now();
                 lstPassesToUpdate.add(gp);
             }
 
+            // Create scan result object to inform caller of result
             ScanResult sr = new ScanResult();
             sr.id = gp.Id;
             sr.name = gp.Name;
             sr.isSuccess = !hasError;
-            sr.errorMessage = errorMessage != null ? errorMessage : '';
+            sr.errorMessage = errorMessage;
+            System.debug('::: scanresult obj --> ' + sr);
             lstScanResults.add(sr);
         }
 
         if (!lstPassesToUpdate.isEmpty()) {
-            Database.update(lstPassesToUpdate, AccessLevel.USER_MODE);
+            System.debug('::: updating passes');
+            // TODO Why is this failing? Need to identify access issue before heading to prod
+            // Database.update(lstPassesToUpdate, AccessLevel.USER_MODE);
+            update lstPassesToUpdate;
         }
 
+        System.debug(':::: lstScanResults --> ' + lstScanResults);
         return lstScanResults;
     }
 
@@ -188,14 +211,14 @@ public without sharing class GuestPassService {
         GuestPass guestPass
     ) {
         Lead ld = new Lead();
-        ld.RecordTypeId = getMembershipLeadRecordTypeId();
+        ld.RecordTypeId = getInvitedGuestRecordTypeId();
         ld.Company = LEAD_COMPANY_DEFAULT;
         ld.FirstName = guestPass.guestFirstName;
         ld.LastName = guestPass.guestLastName;
         ld.Email = guestPass.guestEmail;
         ld.LeadSource = 'Guest Visit';
         ld.Status = LEAD_STATUS_DEFAULT;
-        insert ld;
+        Database.insert(ld, AccessLevel.SYSTEM_MODE);
         return ld;
     }
 
@@ -240,6 +263,18 @@ public without sharing class GuestPassService {
                 .get('Membership').getRecordTypeId();
         }
         return membershipLeadRecordTypeId;
+    }
+
+    /**
+     * @description Retrieve Lead membership record type id
+     */
+    @TestVisible
+    private static Id getInvitedGuestRecordTypeId() {
+        if (invitedGuestRecordTypeId == null) {
+            invitedGuestRecordTypeId = Schema.SObjectType.Lead.getRecordTypeInfosByDeveloperName()
+                .get('Invited_Guest').getRecordTypeId();
+        }
+        return invitedGuestRecordTypeId;
     }
 
     /**

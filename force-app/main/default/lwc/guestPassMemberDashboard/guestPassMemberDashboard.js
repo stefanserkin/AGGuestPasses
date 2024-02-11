@@ -104,6 +104,7 @@ export default class GuestPassMemberDashboard extends LightningElement {
      */
 
     formatDateString(date) {
+        if (date == null) return '';
         const options = {
             year: "numeric", month: "numeric", day: "numeric"
         };

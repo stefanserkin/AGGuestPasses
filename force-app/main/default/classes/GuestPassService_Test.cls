@@ -5,6 +5,7 @@ private class GuestPassService_Test {
     static void testGetGuestPassesForAccount() {
         Contact ct = TestDataFactory.createContacts(1).get(0);
         insert ct;
+
         List<Contact> lstCtsWithAccId = [SELECT Id, AccountId FROM Contact WHERE Id = :ct.Id LIMIT 1];
         List<Guest_Pass__c> lstRecords = TestDataFactory.createHostGuestPasses(lstCtsWithAccId, 3);
         lstRecords.get(0).Expiration_Date__c = Date.today().addDays(-1);
@@ -62,6 +63,9 @@ private class GuestPassService_Test {
 
     @IsTest
     static void testGetSharedGuestPasses() {
+        List<TREX1__Location__c> lstLocations = TestDataFactory.createGuestPassLocations(1);
+        insert lstLocations;
+
         insert TestDataFactory.createContacts(2);
         List<Contact> lstContacts = [SELECT Id, AccountId FROM Contact LIMIT 2];
         Contact hostContact = lstContacts[0];
@@ -73,6 +77,7 @@ private class GuestPassService_Test {
         ).get(0);
         guestPass.Contact__c = guestContact.Id;
         guestPass.Date_Shared__c = Date.today();
+        guestPass.Location__c = lstLocations[0].Id;
         insert guestPass;
 
         List<GuestPass> lstGuestPasses;

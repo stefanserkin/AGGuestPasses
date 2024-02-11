@@ -94,6 +94,8 @@ public class TestDataFactory {
     private static final String PUBLIC_GROUP_NAME = 'Test Group Test';
     private static final String GROUP_TYPE_REGULAR = 'Regular';
     // Guest Passes
+    private static final String GUEST_PASS_STATUS_ISSUED = 'Issued';
+    private static final String GUEST_PASS_STATUS_INVITED = 'Invited';
     private static final String GUEST_PASS_STATUS_VALID = 'Valid';
     private static final String GUEST_PASS_SOURCE_MEMBERSHIP = 'Membership';
     // Journal Entries (TREX1)
@@ -1023,7 +1025,7 @@ public class TestDataFactory {
             for (Integer i = 0; i < numGuestPasses; i++) {
                 lstPasses.add(
                     new Guest_Pass__c(
-                        Status__c = GUEST_PASS_STATUS_VALID,
+                        Status__c = GUEST_PASS_STATUS_ISSUED,
                         Source__c = GUEST_PASS_SOURCE_MEMBERSHIP,
                         Host_Contact__c = ct.Id,
                         Host_Account__c = ct.AccountId
@@ -1175,6 +1177,27 @@ public class TestDataFactory {
             lstLocations.add( 
                 new TREX1__Location__c(
                     Name = LOCATION_BASE_NAME + String.valueOf(i)
+                )
+            );
+        }
+        return lstLocations;
+    }
+
+    /**
+     * Create locations available for guest pass scanning
+     * No DML - returns unsaved list of sObjects
+     * @param Integer Number of records to create
+     */
+
+     public static List<TREX1__Location__c> createGuestPassLocations(
+        Integer numberOfLocations
+    ) {
+        List<TREX1__Location__c> lstLocations = new List<TREX1__Location__c>();
+        for (Integer i = 0; i < numberOfLocations; i++) {
+            lstLocations.add( 
+                new TREX1__Location__c(
+                    Name = LOCATION_BASE_NAME + String.valueOf(i), 
+                    Available_in_Guest_Pass_Scanner__c = true
                 )
             );
         }

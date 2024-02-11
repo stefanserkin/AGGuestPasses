@@ -1,10 +1,17 @@
 @IsTest
 private class GuestPassController_Test {
+
+    @TestSetup
+    static void makeData() {
+        List<TREX1__Location__c> lstLocations = TestDataFactory.createGuestPassLocations(1);
+        insert lstLocations;
+    }
     
     @IsTest
     static void testGetHostMemberships() {
         Contact ct = TestDataFactory.createContacts(1).get(0);
         insert ct;
+
         List<Contact> lstCtsWithAccId = [SELECT Id, AccountId FROM Contact WHERE Id = :ct.Id LIMIT 1];
         List<Guest_Pass__c> lstRecords = TestDataFactory.createHostGuestPasses(lstCtsWithAccId, 3);
         insert lstRecords;
@@ -82,6 +89,8 @@ private class GuestPassController_Test {
 
     @IsTest
     static void testCheckInGuestPass() {
+        TREX1__Location__c scannerLocation = [SELECT Id FROM TREX1__Location__c WHERE Available_in_Guest_Pass_Scanner__c = TRUE LIMIT 1];
+
         Contact ct = TestDataFactory.createContacts(1).get(0);
         insert ct;
 
@@ -92,12 +101,12 @@ private class GuestPassController_Test {
 
         String guestPassName = [SELECT Name FROM Guest_Pass__c WHERE Id = :gp.Id LIMIT 1].Name;
 
-        String result;
+        GuestPassService.ScanResult result;
         Test.startTest();
-        result = GuestPassController.checkInGuestPass(guestPassName);
+        result = GuestPassController.checkInGuestPass(guestPassName, scannerLocation.Id);
         Test.stopTest();
 
-        Assert.areEqual('success', result, 'Should have received a successful message');
+        Assert.isTrue(result.isSuccess, 'Should have received a successful scan result');
 
         Guest_Pass__c refreshedPass = [
             SELECT Status__c, Visit_Date_Time__c FROM Guest_Pass__c WHERE Id = :gp.Id LIMIT 1
@@ -105,6 +114,28 @@ private class GuestPassController_Test {
 
         Assert.areEqual(GuestPassService.STATUS_ATTENDED, refreshedPass.Status__c, 'Pass should have a status of Attended');
         Assert.isNotNull(refreshedPass.Visit_Date_Time__c, 'Pass should have a visit date/time');
+    }
+
+    @IsTest
+    static void testCheckInInvalidGuestPass() {
+        TREX1__Location__c scannerLocation = [SELECT Id FROM TREX1__Location__c WHERE Available_in_Guest_Pass_Scanner__c = TRUE LIMIT 1];
+
+        Contact ct = TestDataFactory.createContacts(1).get(0);
+        insert ct;
+
+        Guest_Pass__c gp = new Guest_Pass__c();
+        gp.Contact__c = ct.Id;
+        gp.Status__c = GuestPassService.STATUS_EXPIRED;
+        insert gp;
+
+        String guestPassName = [SELECT Name FROM Guest_Pass__c WHERE Id = :gp.Id LIMIT 1].Name;
+
+        GuestPassService.ScanResult result;
+        Test.startTest();
+        result = GuestPassController.checkInGuestPass(guestPassName, scannerLocation.Id);
+        Test.stopTest();
+
+        Assert.isFalse(result.isSuccess, 'Should not have received a successful scan result');
     }
 
 }
