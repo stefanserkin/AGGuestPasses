@@ -67,7 +67,6 @@ export default class GuestPassMemberDashboard extends LightningElement {
 
     async handleSharePass(event) {
         const selectedId = event.target.dataset.id;
-        console.log(selectedId);
         const selectedPass = this.guestPasses.find(pass => {
             return pass.id === selectedId
         });
@@ -101,7 +100,6 @@ export default class GuestPassMemberDashboard extends LightningElement {
     }
 
     async handleRevokePass(event) {
-        console.log('revoke pass with id --> ' + event.target.dataset.id);
         const selectedId = event.target.dataset.id;
 
         const result = await LightningConfirm.open({

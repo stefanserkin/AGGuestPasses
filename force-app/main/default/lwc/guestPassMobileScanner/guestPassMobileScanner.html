@@ -1,10 +1,11 @@
 <template>
     <div class="slds-card">
+        <!-- HEADER -->
         <div class="slds-text-align_center">
             <span class="slds-text-heading_large">{appHeader}</span>
         </div>
  
-        <!-- After a barcode is successfully scanned, its value is displayed here: -->
+        <!-- DISPLAY RESULTS -->
         <template lwc:if={scannedBarcode}>
             <div class="slds-var-m-vertical_large slds-var-p-vertical_medium 
                 slds-text-align_center slds-border_top slds-border_bottom">
@@ -15,14 +16,17 @@
             </div>
         </template>
  
-        <!-- Static help text for disabled/enabled button -->
+        <!-- BODY -->
         <div class="slds-text-align_center slds-text-color_weak slds-m-vertical_large">
+            <!-- SCANNER UNAVAILABLE MESSAGE -->
             <template lwc:if={scannerUnavailable}>
                 The scanner is not available for this type of device.
             </template>
+            <!-- BARCODE SCANNER INFO/MESSAGE -->
             <template lwc:elseif={hasSelectedLocation}>
                 Click <strong>Scan Barcode</strong> to open the camera. Position a barcode in the scanner view to scan it.
             </template>
+            <!-- SELECT LOCATION -->
             <template lwc:else>
                 <lightning-combobox
                     name="locations"
@@ -35,7 +39,7 @@
             </template>
         </div>
  
-        <!-- The click-to-scan button; Disabled if BarcodeScanner isn't available -->
+        <!-- BARCODE SCANNER BUTTON -->
         <div class="slds-align_absolute-center slds-m-vertical_large">
             <lightning-button
                 variant="brand"
@@ -46,6 +50,7 @@
                 onclick={handleScanBarcode}>
             </lightning-button>
         </div>
+        <!-- CHANGE LOCATION BUTTON -->
         <div lwc:if={hasSelectedLocation} class="slds-align_absolute-center slds-m-verical_large">
             <lightning-button
                 variant="neutral"
