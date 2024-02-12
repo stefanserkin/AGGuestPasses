@@ -2,7 +2,7 @@ import { LightningElement, wire } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { getBarcodeScanner } from 'lightning/mobileCapabilities';
 import checkInGuestPass from '@salesforce/apex/GuestPassController.checkInGuestPass';
-import getLocations from '@salesforce/apex/GuestPassScannerController.getScannerLocations';
+import getLocations from '@salesforce/apex/GuestPassController.getScannerLocations';
 
 export default class GuestPassMobileScanner extends LightningElement {
     isLoading = false;

@@ -5,6 +5,8 @@ private class GuestPassController_Test {
     static void makeData() {
         List<TREX1__Location__c> lstLocations = TestDataFactory.createGuestPassLocations(1);
         insert lstLocations;
+        Contact ct = TestDataFactory.createContacts(1).get(0);
+        insert ct;
     }
     
     @IsTest
@@ -32,9 +34,7 @@ private class GuestPassController_Test {
 
     @IsTest
     static void testSendGuestPass() {
-        Contact ct = TestDataFactory.createContacts(1).get(0);
-        insert ct;
-        List<Contact> lstCtsWithAccId = [SELECT Id, AccountId FROM Contact WHERE Id = :ct.Id LIMIT 1];
+        List<Contact> lstCtsWithAccId = [SELECT Id, AccountId FROM Contact LIMIT 1];
         
         Guest_Pass__c record = TestDataFactory.createHostGuestPasses(lstCtsWithAccId, 1).get(0);
         insert record;
@@ -91,8 +91,7 @@ private class GuestPassController_Test {
     static void testCheckInGuestPass() {
         TREX1__Location__c scannerLocation = [SELECT Id FROM TREX1__Location__c WHERE Available_in_Guest_Pass_Scanner__c = TRUE LIMIT 1];
 
-        Contact ct = TestDataFactory.createContacts(1).get(0);
-        insert ct;
+        Contact ct = [SELECT Id, AccountId FROM Contact LIMIT 1];
 
         Guest_Pass__c gp = new Guest_Pass__c();
         gp.Contact__c = ct.Id;
@@ -120,8 +119,7 @@ private class GuestPassController_Test {
     static void testCheckInInvalidGuestPass() {
         TREX1__Location__c scannerLocation = [SELECT Id FROM TREX1__Location__c WHERE Available_in_Guest_Pass_Scanner__c = TRUE LIMIT 1];
 
-        Contact ct = TestDataFactory.createContacts(1).get(0);
-        insert ct;
+        Contact ct = [SELECT Id, AccountId FROM Contact LIMIT 1];
 
         Guest_Pass__c gp = new Guest_Pass__c();
         gp.Contact__c = ct.Id;
@@ -136,6 +134,40 @@ private class GuestPassController_Test {
         Test.stopTest();
 
         Assert.isFalse(result.isSuccess, 'Should not have received a successful scan result');
+    }
+
+    @IsTest
+    static void testGetScannerLocations() {
+        TREX1__Location__c scannerLocation = [SELECT Id FROM TREX1__Location__c WHERE Available_in_Guest_Pass_Scanner__c = TRUE LIMIT 1];
+        Test.startTest();
+        List<TREX1__Location__c> lstReturnedLocations = GuestPassController.getScannerLocations();
+        Test.stopTest();
+        Assert.areEqual(1, lstReturnedLocations.size(), 'Should have received a single scanning location');
+        Assert.areEqual(scannerLocation.Id, lstReturnedLocations[0].Id, 'Should have received the location available for the scanner app');
+    }
+
+    @IsTest
+    static void testRevokePass() {
+        List<Contact> lstCtsWithAccId = [SELECT Id, AccountId FROM Contact LIMIT 1];
+
+        // Create an additional contact to share the guest pass with
+        Contact guestCt = TestDataFactory.createContacts(1).get(0);
+        insert guestCt;
+        
+        Guest_Pass__c record = TestDataFactory.createHostGuestPasses(lstCtsWithAccId, 1).get(0);
+        record.Status__c = 'Invited';
+        record.Contact__c = guestCt.Id;
+        insert record;
+
+        Test.startTest();
+        String result = GuestPassController.revokePass(record.Id);
+        Test.stopTest();
+
+        Assert.areEqual('success', result, 'Should have received a successful response');
+
+        Guest_Pass__c refreshedPass = [SELECT Status__c, Contact__c FROM Guest_Pass__c WHERE Id = :record.Id LIMIT 1];
+        Assert.areEqual('Issued', refreshedPass.Status__c, 'Status should have returned to issued');
+        Assert.isNull(refreshedPass.Contact__c, 'Contact should have been cleared');
     }
 
 }

@@ -165,23 +165,6 @@ public without sharing class GuestPassService {
                 pass.dateShared = record.Date_Shared__c;
                 pass.visitDateTime = record.Visit_Date_Time__c;
             } 
-
-            /*
-            if (record.Guest_First_Name__c != null) {
-                pass.status = 'Shared';
-                pass.guestFirstName = record.Guest_First_Name__c;
-                pass.guestLastName = record.Guest_Last_Name__c;
-                pass.guestEmail = record.Guest_Email__c;
-                pass.dateShared = record.Date_Shared__c;
-                pass.visitDateTime = record.Visit_Date_Time__c;
-            } 
-            else if (record.Status__c == 'Expired') {
-                pass.status = 'Expired';
-            }
-            else {
-                pass.status = 'Available';
-            }
-            */
             lstPasses.add(pass);
         }
         return lstPasses;

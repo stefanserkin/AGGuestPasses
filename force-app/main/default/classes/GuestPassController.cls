@@ -68,4 +68,15 @@ public with sharing class GuestPassController {
         }
     }
 
+    @AuraEnabled(cacheable=true)
+    public static List<TREX1__Location__c> getScannerLocations() {
+        return [
+            SELECT Id, Name 
+              FROM TREX1__Location__c 
+             WHERE Available_in_Guest_Pass_Scanner__c = true
+              WITH USER_MODE 
+             LIMIT 1000
+        ];
+    }
+
 }
