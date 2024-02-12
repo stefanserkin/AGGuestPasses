@@ -123,6 +123,25 @@ public without sharing class GuestPassService {
     }
 
     /**
+     * @description Remove guest information from guest passes
+     */
+    public static List<Guest_Pass__c> revokeGuestPasses(
+        Set<Id> setGuestPassIds
+    ) {
+        List<Guest_Pass__c> lstPasses = new List<Guest_Pass__c>();
+        for (Id gpId : setGuestPassIds) {
+            Guest_Pass__c gp = new Guest_Pass__c(Id = gpId);
+            gp.Status__c = STATUS_ISSUED;
+            gp.Lead__c = null;
+            gp.Contact__c = null;
+            gp.Date_Shared__c = null;
+            lstPasses.add(gp);
+        }
+        Database.update(lstPasses, AccessLevel.SYSTEM_MODE);
+        return lstPasses;
+    }
+
+    /**
      * @description Create a GuestPass object from Guest_Pass__c SObject
      */
     private static List<GuestPass> wrapGuestPasses(
@@ -134,8 +153,20 @@ public without sharing class GuestPassService {
             pass.id = record.Id;
             pass.passNumber = record.Name;
             pass.expirationDate = record.Expiration_Date__c;
-            // Set status to 'Shared', 'Available', or Expired
+            // If status is 'Issued', change to 'Available'
+            // Otherwise, set guest pass status value
+            pass.status = record.Status__c == STATUS_ISSUED ? 'Available' : record.Status__c;
+
             // Shared passes will have guest data
+            if (record.Guest_First_Name__c != null) {
+                pass.guestFirstName = record.Guest_First_Name__c;
+                pass.guestLastName = record.Guest_Last_Name__c;
+                pass.guestEmail = record.Guest_Email__c;
+                pass.dateShared = record.Date_Shared__c;
+                pass.visitDateTime = record.Visit_Date_Time__c;
+            } 
+
+            /*
             if (record.Guest_First_Name__c != null) {
                 pass.status = 'Shared';
                 pass.guestFirstName = record.Guest_First_Name__c;
@@ -146,10 +177,11 @@ public without sharing class GuestPassService {
             } 
             else if (record.Status__c == 'Expired') {
                 pass.status = 'Expired';
-            } 
+            }
             else {
                 pass.status = 'Available';
             }
+            */
             lstPasses.add(pass);
         }
         return lstPasses;

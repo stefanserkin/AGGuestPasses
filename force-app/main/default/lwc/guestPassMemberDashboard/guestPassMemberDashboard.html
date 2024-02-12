@@ -1,14 +1,15 @@
 <template>
     <lightning-card title={cardTitle} icon-name={cardIconName}>
 
-        <template lwc:if={guestPasses}>
-            <!-- TABLE HEADERS 
-            <lightning-layout>
-                <lightning-layout-item class="ggm-row-header slds-align_absolute-center slds-text-heading_small" size="4" padding="around-small">Guest Pass Number</lightning-layout-item>
-                <lightning-layout-item class="ggm-row-header slds-align_absolute-center slds-text-heading_small" size="4" padding="around-small">Status</lightning-layout-item>
-                <lightning-layout-item class="ggm-row-header slds-align_absolute-center slds-text-heading_small" size="4" padding="around-small">Guest</lightning-layout-item>
-            </lightning-layout> -->
+        <!-- LIGHTNING SPINNER -->
+        <template lwc:if={isLoading}>
+            <lightning-spinner 
+                alternative-text="Loading" 
+                size="medium"
+            ></lightning-spinner>
+        </template>
 
+        <template lwc:if={guestPasses}>
             <template for:each={guestPasses} for:item="pass">
                 <div key={pass.id} class="ggm-row-container">
                     <lightning-layout>
@@ -37,6 +38,14 @@
                                 <lightning-formatted-text 
                                     value={pass.guestInfo}
                                 ></lightning-formatted-text>
+                                <lightning-button-icon
+                                    lwc:if={pass.isRevocable} 
+                                    icon-name="action:close"
+                                    data-id={pass.id}
+                                    onclick={handleRevokePass}
+                                    disabled={pass.disableRevoke}
+                                    class="slds-var-m-left_x-small"
+                                ></lightning-button-icon>
                             </template>
                             <template lwc:else>
                                 <!-- SHARE WITH GUEST -->
@@ -44,8 +53,9 @@
                                     variant="brand-outline" 
                                     title="Invite a Guest" 
                                     label="Invite a Guest" 
-                                    data-id={pass.id}
-                                    onclick={handleSharePass}
+                                    data-id={pass.id} 
+                                    onclick={handleSharePass} 
+                                    class="slds-var-m-left_x-small"
                                 ></lightning-button>
                             </template>
                         </lightning-layout-item>

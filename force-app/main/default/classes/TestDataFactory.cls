@@ -14,8 +14,11 @@ public class TestDataFactory {
     private static Id standardTransactionRecTypeId;
     private static Id manualAdjustmentTLIRecTypeId;
     private static Id punchPassRecTypeId;
+    private static Id membershipStandardRecTypeId;
     private static Id membershipTypePunchPassRecTypeId;
+    private static Id membershipTypeStandardRecTypeId;
     private static Id membershipCategoryPunchPassRecTypeId;
+    private static Id membershipCategoryStandardRecTypeId;
     
     private static Id globalBillingGroupId;
     private static String glCodeAccountsReceivable;
@@ -106,6 +109,7 @@ public class TestDataFactory {
     private static final String LOCATION_BASE_NAME = 'Flushing';
     // Memberships (TREX1)
     private static final String VALID_MEMBERSHIP_CATEGORY = 'Pilates';
+    private static final String MEMBERSHIP_STATUS_DRAFT = 'Draft';
     private static final String MEMBERSHIP_STATUS_ACTIVE = 'Active';
     private static final String MEMBERSHIP_STATUS_COMPLETE = 'Complete';
     // Membership Categories (TREX1)
@@ -1209,6 +1213,31 @@ public class TestDataFactory {
      * Memberships (TREX1)
      ***********************************/
 
+     /**
+     * Create membership sObjects
+     * No DML - returns unsaved list of sObjects
+     * @param Contact membership contact with account id
+     * @param Membership type with membership category
+     */
+
+    public static TREX1__Membership__c createDraftStandardMembership(
+        Contact contact, 
+        TREX1__Membership_Type__c membershipType
+    ) {
+        if (membershipStandardRecTypeId == null) {
+            membershipStandardRecTypeId = getStandardMembershipPunchPassId();
+        }
+        return new TREX1__Membership__c(
+            TREX1__Contact__c = contact.Id, 
+            TREX1__Account__c = contact.AccountId, 
+            RecordTypeId = membershipStandardRecTypeId, 
+            TREX1__memb_Type__c = membershipType.Id, 
+            TREX1__Status__c = MEMBERSHIP_STATUS_DRAFT,
+            TREX1__memb_Category__c = membershipType.TREX1__Category__c,
+            TREX1__Start_Date__c = Date.today()
+        );
+    }
+
     /**
      * Create membership sObjects
      * No DML - returns unsaved list of sObjects
@@ -1342,6 +1371,17 @@ public class TestDataFactory {
         return punchPassRecTypeId;
     }
 
+    /**
+     * Get standard membership record type id
+     */
+
+     private static Id getStandardMembershipPunchPassId() {
+        if (membershipStandardRecTypeId == null) {
+            membershipStandardRecTypeId = Schema.SObjectType.TREX1__Membership__c.getRecordTypeInfosByDeveloperName().get('Standard_Membership').getRecordTypeId();
+        }
+        return membershipStandardRecTypeId;
+    }
+
     
     /***********************************
      * Membership Categories (TREX1)
@@ -1362,6 +1402,27 @@ public class TestDataFactory {
                 new TREX1__Membership_Category__c(
                     Name = VALID_MEMBERSHIP_CATEGORY,
                     TREX1__Available_For_Purchase__c = true
+                )
+            );
+        }
+        return lstMembershipCategories;
+    }
+
+    public static List<TREX1__Membership_Category__c> createStandardMembershipCategories(
+        Integer numberOfMembershipCategories
+    ) {
+        List<TREX1__Membership_Category__c> lstMembershipCategories = new List<TREX1__Membership_Category__c>();
+
+        if (membershipCategoryStandardRecTypeId == null) {
+            membershipCategoryStandardRecTypeId = Schema.SObjectType.TREX1__Membership_Category__c.getRecordTypeInfosByDeveloperName().get('Standard_Membership_Category').getRecordTypeId();
+        }
+
+        for (Integer i = 0; i < numberOfMembershipCategories; i++) {
+            lstMembershipCategories.add(
+                new TREX1__Membership_Category__c(
+                    Name = 'TestMem' + String.valueOf(i),
+                    TREX1__Available_For_Purchase__c = true, 
+                    RecordTypeId = membershipCategoryStandardRecTypeId
                 )
             );
         }
@@ -1398,6 +1459,47 @@ public class TestDataFactory {
      * Membership Types (TREX1)
      ***********************************/
 
+     /**
+     * Create membership type sObjects
+     * No DML - returns unsaved list of sObjects
+     * @param List<TREX1__Membership_Category__c> list of categories
+     * @param TREX1__Location__c location
+     * @param Integer Number of membership types per category
+     */
+
+    public static List<TREX1__Membership_Type__c> createStandardMembershipTypes(
+        List<TREX1__Membership_Category__c> lstMembershipCategories, 
+        TREX1__Location__c location, 
+        Integer numberOfMembershipTypes
+    ) {
+        List<TREX1__Membership_Type__c> lstMembershipTypes = new List<TREX1__Membership_Type__c>();
+
+        if (membershipTypeStandardRecTypeId == null) {
+            membershipTypeStandardRecTypeId = Schema.SObjectType.TREX1__Membership_Type__c.getRecordTypeInfosByDeveloperName().get('Standard_Membership_Type').getRecordTypeId();
+        }
+
+        for (TREX1__Membership_Category__c cat : lstMembershipCategories) {
+            for (Integer i = 0; i < numberOfMembershipTypes; i++) {
+                lstMembershipTypes.add(
+                    new TREX1__Membership_Type__c(
+                        Name = 'Mem Type ' + String.valueOf(i),
+                        Appointment_Length__c = 60,
+                        RecordTypeId = membershipTypeStandardRecTypeId,
+                        TREX1__Available_For_Purchase__c = true, 
+                        TREX1__Available_Online__c = true, 
+                        TREX1__Can_Freeze__c = true, 
+                        TREX1__Cancellation_Policy__c = 'N Days Notice', 
+                        TREX1__Category__c = cat.Id, 
+                        TREX1__End_Date_Setting__c = 'Perpetual', 
+                        TREX1__Location__c = location.Id, 
+                        TREX1__Term_Type__c = 'Monthly'
+                    )
+                );
+            }
+        }
+        return lstMembershipTypes;
+    }
+    
     /**
      * Create membership type sObjects
      * No DML - returns unsaved list of sObjects
