@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>59.0</apiVersion>
+    <assignments>
+        <name>Set_Status_to_Expired</name>
+        <label>Set Status to Expired</label>
+        <locationX>176</locationX>
+        <locationY>252</locationY>
+        <assignmentItems>
+            <assignToReference>$Record.Status__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Expired</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Update_Guest_Pass</targetReference>
+        </connector>
+    </assignments>
+    <description>Scheduled flow. Daily flow flips guest pass statuses to Expired as their Expiration Date passes.</description>
+    <environments>Default</environments>
+    <interviewLabel>GuestPass SCH ExpirePasses {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>GuestPass SCH ExpirePasses</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordUpdates>
+        <name>Update_Guest_Pass</name>
+        <label>Update Guest Pass</label>
+        <locationX>176</locationX>
+        <locationY>360</locationY>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Set_Status_to_Expired</targetReference>
+        </connector>
+        <filterLogic>(1 OR 2 OR 3) AND 4</filterLogic>
+        <filters>
+            <field>Status__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Valid</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>Status__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Issued</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>Status__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Invited</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>Expiration_Date_Has_Passed__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </filters>
+        <object>Guest_Pass__c</object>
+        <schedule>
+            <frequency>Once</frequency>
+            <startDate>2024-01-21</startDate>
+            <startTime>13:53:00.000Z</startTime>
+        </schedule>
+        <triggerType>Scheduled</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>

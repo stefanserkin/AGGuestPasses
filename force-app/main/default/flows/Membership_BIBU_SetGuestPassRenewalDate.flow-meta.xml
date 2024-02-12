@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>60.0</apiVersion>
+    <assignments>
+        <name>Set_Guest_Pass_Renewal_Date</name>
+        <label>Set Guest Pass Renewal Date</label>
+        <locationX>176</locationX>
+        <locationY>287</locationY>
+        <assignmentItems>
+            <assignToReference>$Record.Guest_Pass_Renewal_Date__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>dateFmlOneYearInTheFuture</elementReference>
+            </value>
+        </assignmentItems>
+    </assignments>
+    <description>Record-triggered, before insert and before update. When a membership is newly activated and eligible for complimentary guest passes, set the Guest Pass Renewal Date to one year in the future.</description>
+    <environments>Default</environments>
+    <formulas>
+        <name>dateFmlOneYearInTheFuture</name>
+        <dataType>Date</dataType>
+        <expression>DATE( YEAR({!$Flow.CurrentDate}) + 1, MONTH({!$Flow.CurrentDate}), DAY({!$Flow.CurrentDate}) )</expression>
+    </formulas>
+    <interviewLabel>Membership BIBU SetGuestPassRenewalDate {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Membership BIBU SetGuestPassRenewalDate</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Set_Guest_Pass_Renewal_Date</targetReference>
+        </connector>
+        <filterFormula>AND(
+  ISPICKVAL( {!$Record.TREX1__Status__c}, &quot;Active&quot; ), 
+  OR( 
+    ISNEW(), 
+    ISPICKVAL( {!$Record__Prior.TREX1__Status__c}, &quot;Draft&quot; ) ,
+    ISPICKVAL( {!$Record__Prior.TREX1__Status__c}, &quot;Pending Active&quot; )
+  ), 
+  {!$Record.TREX1__memb_Type__r.Guest_Passes_per_Year__c} &gt; 0
+)</filterFormula>
+        <object>TREX1__Membership__c</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordBeforeSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>

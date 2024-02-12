@@ -13,6 +13,16 @@
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
+                <fullName>Issued</fullName>
+                <default>false</default>
+                <label>Issued</label>
+            </value>
+            <value>
+                <fullName>Invited</fullName>
+                <default>false</default>
+                <label>Invited</label>
+            </value>
+            <value>
                 <fullName>Valid</fullName>
                 <default>false</default>
                 <label>Valid</label>

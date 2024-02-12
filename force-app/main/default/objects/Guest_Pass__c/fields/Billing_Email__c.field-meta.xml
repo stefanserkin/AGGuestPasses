@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>QR_Code__c</fullName>
+    <fullName>Billing_Email__c</fullName>
     <externalId>false</externalId>
-    <formula>/* IMAGE(&quot;https://chart.googleapis.com/chart?chs=250x250&amp;cht=qr&amp;chl=&quot; &amp; Name ,&quot;Scan QR Code to check in Guest Pass&quot;) */
-
-IMAGE(&quot;https://qrcode.tec-it.com/API/QRCode?data=&quot; &amp; Name ,&quot;Scan QR Code to check in Guest Pass&quot;, 250, 250)</formula>
+    <formula>CASE( Location__r.Name , 
+  &quot;Upper East Side&quot;, &quot;uesmembershipbilling@asphaltgreen.org&quot;, 
+  &quot;Battery Park City&quot;, &quot;bpcmembershipbilling@asphaltgreen.org&quot;, 
+  &quot;membershipbilling@asphaltgreen.org&quot;
+)</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-    <label>QR Code</label>
+    <label>Billing Email</label>
     <required>false</required>
     <trackHistory>false</trackHistory>
     <trackTrending>false</trackTrending>
