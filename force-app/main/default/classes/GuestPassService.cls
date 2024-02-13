@@ -135,6 +135,7 @@ public without sharing class GuestPassService {
             gp.Lead__c = null;
             gp.Contact__c = null;
             gp.Date_Shared__c = null;
+            gp.Invitation_Sent__c = false;
             lstPasses.add(gp);
         }
         Database.update(lstPasses, AccessLevel.SYSTEM_MODE);
