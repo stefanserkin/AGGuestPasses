@@ -8,6 +8,8 @@ export default class GuestPassMobileScanner extends LightningElement {
     isLoading = false;
     error;
 
+    isManualEntry = false;
+
     scanner;
     scannedBarcode = '';
     resultMessage = '';
@@ -85,35 +87,7 @@ export default class GuestPassMobileScanner extends LightningElement {
         this.scanner.beginCapture(scanningOptions)
             .then((result) => {
                 this.scannedBarcode = result.value;
-                checkInGuestPass({ 
-                    guestPassName: this.scannedBarcode, 
-                    scanningLocationId: this.selectedLocationId 
-                })
-                    .then((scanResult) => {
-                        this.resultMessage = scanResult.isSuccess ? 'Checked In' : scanResult.errorMessage;
-                        if (scanResult.isSuccess) {
-                            this.dispatchEvent(
-                                new ShowToastEvent({
-                                    title: 'Success',
-                                    message: `Guest Pass ${scanResult.name} was successfully checked in`,
-                                    variant: 'success'
-                                })
-                            );
-                        } else {
-                            this.dispatchEvent(
-                                new ShowToastEvent({
-                                    title: 'Scan Failed',
-                                    message: `Failed to check in Guest Pass ${scanResult.name}. Error: ${scanResult.errorMessage}`,
-                                    variant: 'error'
-                                })
-                            );
-                        }
-                        
-                    })
-                    .catch((error) => {
-                        console.error(error);
-                    });
-
+                this.handleCheckInGuestPass();
             })
             .catch((error) => {
                 // Handle cancellation and unexpected errors here
@@ -140,6 +114,44 @@ export default class GuestPassMobileScanner extends LightningElement {
                 // whether we completed successfully or had an error
                 this.scanner.endCapture();
             });
+    }
+
+    handleCheckInGuestPass() {
+        checkInGuestPass({ 
+            guestPassName: this.scannedBarcode, 
+            scanningLocationId: this.selectedLocationId 
+        })
+            .then((scanResult) => {
+                this.resultMessage = scanResult.isSuccess ? 'Checked In' : scanResult.errorMessage;
+                if (scanResult.isSuccess) {
+                    this.dispatchEvent(
+                        new ShowToastEvent({
+                            title: 'Success',
+                            message: `Guest Pass ${scanResult.name} was successfully checked in`,
+                            variant: 'success'
+                        })
+                    );
+                } else {
+                    this.dispatchEvent(
+                        new ShowToastEvent({
+                            title: 'Scan Failed',
+                            message: `Failed to check in Guest Pass ${scanResult.name}. Error: ${scanResult.errorMessage}`,
+                            variant: 'error'
+                        })
+                    );
+                }
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    }
+
+    handleOpenManualEntry() {
+        this.isManualEntry = true;
+    }
+
+    handleManualInput(event) {
+        this.scannedBarcode = event.detail.value;
     }
  
     dispatchToastEvent(title, errorMessage, variant, mode) {

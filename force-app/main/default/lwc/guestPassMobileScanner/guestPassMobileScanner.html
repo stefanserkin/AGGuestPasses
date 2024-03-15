@@ -1,5 +1,5 @@
 <template>
-    <div class="slds-card">
+    <div class="slds-card scanner-info-container">
         <!-- HEADER -->
         <div class="slds-text-align_center">
             <span class="slds-text-heading_large">{appHeader}</span>
@@ -24,7 +24,34 @@
             </template>
             <!-- BARCODE SCANNER INFO/MESSAGE -->
             <template lwc:elseif={hasSelectedLocation}>
-                Click <strong>Scan Barcode</strong> to open the camera. Position a barcode in the scanner view to scan it.
+                Click <strong>Scan Barcode</strong> to open the camera. Position a barcode in the scanner view to scan it.<br />
+                <!-- OPEN MANUAL ENTRY -->
+                <div lwc:if={isManualEntry}>
+                    <lightning-input
+                        type="text" 
+                        label="Enter some text"
+                        onchange={handleManualInput}
+                    ></lightning-input>
+                    <lightning-button
+                        variant="brand"
+                        disabled={handleScanBarcode}
+                        icon-name="utility:search"
+                        label="Check In Pass Number"
+                        title="Check In Pass Number"
+                        onclick={handleCheckInGuestPass}>
+                    </lightning-button>
+                </div>
+
+                <!-- OPEN BARCODE SCANNER BUTTON -->
+                <lightning-button
+                    lwc:else
+                    variant="brand"
+                    disabled={scanButtonDisabled}
+                    icon-name="utility:scan"
+                    label="Scan Barcode"
+                    title="Open the camera view and look for a barcode to scan"
+                    onclick={handleScanBarcode}>
+                </lightning-button>
             </template>
             <!-- SELECT LOCATION -->
             <template lwc:else>
@@ -38,16 +65,15 @@
                 ></lightning-combobox>
             </template>
         </div>
- 
-        <!-- BARCODE SCANNER BUTTON -->
+
+        <!-- OPEN MANUAL ENTRY -->
         <div class="slds-align_absolute-center slds-m-vertical_large">
             <lightning-button
-                variant="brand"
-                disabled={scanButtonDisabled}
-                icon-name="utility:scan"
-                label="Scan Barcode"
-                title="Open the camera view and look for a barcode to scan"
-                onclick={handleScanBarcode}>
+                variant="brand-outline"
+                icon-name="utility:text"
+                label="Enter Pass Number"
+                title="Enter Pass Number"
+                onclick={handleOpenManualEntry}>
             </lightning-button>
         </div>
         <!-- CHANGE LOCATION BUTTON -->

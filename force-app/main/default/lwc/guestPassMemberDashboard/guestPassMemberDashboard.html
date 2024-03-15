@@ -1,5 +1,5 @@
 <template>
-    <lightning-card title={cardTitle} icon-name={cardIconName}>
+    <lightning-card lwc:if={isMember} title={cardTitle} icon-name={cardIconName}>
 
         <!-- LIGHTNING SPINNER -->
         <template lwc:if={isLoading}>

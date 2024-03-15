@@ -1,5 +1,5 @@
 import { LightningElement, wire } from 'lwc';
-import { getRecord } from 'lightning/uiRecordApi';
+import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { refreshApex } from '@salesforce/apex';
 import LightningConfirm from 'lightning/confirm';
@@ -8,12 +8,15 @@ import getHostGuestPasses from '@salesforce/apex/GuestPassController.getHostGues
 import revokePass from '@salesforce/apex/GuestPassController.revokePass';
 import USER_ID from '@salesforce/user/Id';
 import ACCOUNTID_FIELD from '@salesforce/schema/User.AccountId';
+import CONTACT_TYPE_FIELD from '@salesforce/schema/User.Contact.Contact_Type__c';
 
 export default class GuestPassMemberDashboard extends LightningElement {
     isLoading = false;
     isShareMode = false;
     error;
+    
     accountId;
+    contactType;
     wiredGuestPasses = [];
     guestPasses;
 
@@ -26,7 +29,7 @@ export default class GuestPassMemberDashboard extends LightningElement {
 
     @wire(getRecord, {
 		recordId: USER_ID,
-		fields: [ACCOUNTID_FIELD]
+		fields: [ACCOUNTID_FIELD, CONTACT_TYPE_FIELD]
 	}) wireuser({
 		error,
 		data
@@ -35,8 +38,13 @@ export default class GuestPassMemberDashboard extends LightningElement {
 			this.error = error; 
 		} else if (data) {
 			this.accountId = data.fields.AccountId.value;
+            this.contactType = getFieldValue(data, CONTACT_TYPE_FIELD);
 		}
 	}
+
+    get isMember() {
+        return this.contactType != null && this.contactType == 'Member';
+    }
 
     @wire(getHostGuestPasses, { 
         accountId: '$accountId' 
