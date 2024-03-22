@@ -10,11 +10,7 @@ public with sharing class GuestPassController {
     public static List<GuestPass> getHostGuestPasses(
         String accountId
     ) {
-        try {
-            return GuestPassService.getGuestPassesForHostAccount(accountId);
-        } catch (Exception e) {
-            throw new AuraHandledException(e.getMessage());
-        }
+        return GuestPassService.getGuestPassesForHostAccount(accountId);
     }
 
     @AuraEnabled(cacheable=false)

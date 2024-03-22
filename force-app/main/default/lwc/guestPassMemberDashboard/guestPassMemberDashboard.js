@@ -59,8 +59,8 @@ export default class GuestPassMemberDashboard extends LightningElement {
                     row.guestName = row.guestFirstName + ' ' + row.guestLastName;
                     row.guestInfo = 'Shared with ' + row.guestName + ' on ' + this.formatDateString(row.dateShared);
                 }
-                // Enable revoke button for passes in an 'Invited' state
-                row.isRevocable = row.status == 'Invited' ? true : false;
+                // Enable revoke button for passes in an 'Invited' or 'Valid' state
+                row.isRevocable = (row.status == 'Invited' || row.status == 'Valid');
             });
             this.guestPasses = rows;
             this.error = undefined;
@@ -111,7 +111,7 @@ export default class GuestPassMemberDashboard extends LightningElement {
         const selectedId = event.target.dataset.id;
 
         const result = await LightningConfirm.open({
-            message: 'Are you sure you would like to recall this pass?',
+            message: `This will revoke your guest's invitation. Are you sure you would like to recall this pass?`,
             variant: 'header',
             label: 'Recall Pass',
             theme: 'warning'

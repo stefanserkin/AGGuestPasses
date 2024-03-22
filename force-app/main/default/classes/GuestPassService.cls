@@ -37,7 +37,7 @@ public without sharing class GuestPassService {
     /**
      * @description Assigns a contact or lead id to a shareable guest pass
      */
-    public static void shareGuestPass(
+    public static String shareGuestPass(
         GuestPass guestPass
     ) {
         try {
@@ -64,6 +64,9 @@ public without sharing class GuestPassService {
 
             // Update guest pass record
             Database.update(gp, AccessLevel.SYSTEM_MODE);
+
+            // Return id of contact or lead for guest
+            return whoId;
         } catch (Exception e) {
             throw new AuraHandledException(e.getMessage());
         }
